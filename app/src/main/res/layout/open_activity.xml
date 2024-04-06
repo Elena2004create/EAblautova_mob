@@ -7,7 +7,7 @@
     android:focusable="auto">
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/user_pass"
         android:layout_width="320dp"
         android:layout_height="46dp"
         android:layout_marginStart="44dp"
@@ -31,20 +31,20 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/registrBtn"
         android:layout_width="317dp"
         android:layout_height="55dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
         android:layout_marginBottom="64dp"
+        android:fontFamily="@font/roboto"
         android:text="Button"
-        android:fontFamily="@font/montserrat_semibold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/user_login"
         android:layout_width="317dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
@@ -80,14 +80,14 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/enter"
         android:layout_width="317dp"
         android:layout_height="55dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
         android:layout_marginBottom="176dp"
-        android:text="Button"
-        android:fontFamily="@font/montserrat_semibold"
+        android:fontFamily="@font/roboto"
+        android:text="Войти"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
