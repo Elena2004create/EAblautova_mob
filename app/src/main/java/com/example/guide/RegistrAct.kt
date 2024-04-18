@@ -1,12 +1,17 @@
 package com.example.guide
 
+
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import kotlinx.coroutines.launch
 
 class RegistrAct : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +22,9 @@ class RegistrAct : AppCompatActivity() {
         val userPass: EditText = findViewById(R.id.user_pass)
         val registrBtn: Button = findViewById(R.id.registrBtn)
 
+        //val db = AppDatabase.getInstance(this)
+        //val db by lazy { AppDatabase.getInstance(this)}
+
         registrBtn.setOnClickListener {
             var login = userLogin.text.toString().trim()
             var pass = userPass.text.toString().trim()
@@ -25,7 +33,8 @@ class RegistrAct : AppCompatActivity() {
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
 
             else {
-                var user = User(login, pass)
+                /*
+                var user = User(id = 1, login = login, pass = pass)
 
                 var db = Db(this, null)
                 db.addUser(user)
@@ -33,6 +42,37 @@ class RegistrAct : AppCompatActivity() {
 
                 userLogin.text.clear()
                 userPass.text.clear()
+
+                 */
+                lifecycleScope.launch {
+                    val db = App.database
+                    val userdao = db.userDao()
+                    var user = User(login = login, pass = pass)
+                    userdao.insert(user)
+                    Log.e("1", userdao.getAll().toString())
+
+                    Toast.makeText(this@RegistrAct, "Пользователь добавлен", Toast.LENGTH_LONG).show()
+
+                    userLogin.text.clear()
+                    userPass.text.clear()
+                }
+
+
+                //var db = AppDatabase.getInstance(this)
+                /*
+                var db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database").build()
+                var userDao = db.userDao()
+                userDao.addUser(user)
+                Log.d("db", userDao.getUsers().toString())
+
+                Toast.makeText(this, "Пользователь добавлен", Toast.LENGTH_LONG).show()
+
+                userLogin.text.clear()
+                userPass.text.clear()
+
+                 */
+
+
             }
         }
         val authBtn: TextView = findViewById(R.id.link_to_auth)
