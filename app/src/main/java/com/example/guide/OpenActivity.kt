@@ -57,6 +57,13 @@ class OpenActivity : AppCompatActivity() {
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
 
             else {
+                lifecycleScope.launch {
+                    val user = withContext(Dispatchers.IO) {
+                        userViewModel.getUserId(login, pass)
+                        //
+                    }
+                    Log.d("12", userViewModel.getUserId(login, pass).toString())
+                /*
 
                 lifecycleScope.launch {
                     val user = withContext(Dispatchers.IO) {
@@ -64,6 +71,8 @@ class OpenActivity : AppCompatActivity() {
                         val userDao = db.userDao()
                         userDao.getUserId(login, pass)
                     }
+
+                 */
 
                     if (user != null){
                         Toast.makeText(this@OpenActivity, "Пользователь авторизован", Toast.LENGTH_LONG).show()

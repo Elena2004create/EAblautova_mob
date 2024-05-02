@@ -9,11 +9,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegistrAct : AppCompatActivity() {
+    lateinit var userViewModel: UserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registr)
@@ -21,6 +25,7 @@ class RegistrAct : AppCompatActivity() {
         val userLogin: EditText = findViewById(R.id.user_login)
         val userPass: EditText = findViewById(R.id.user_pass)
         val registrBtn: Button = findViewById(R.id.registrBtn)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         //val db = AppDatabase.getInstance(this)
         //val db by lazy { AppDatabase.getInstance(this)}
@@ -45,6 +50,15 @@ class RegistrAct : AppCompatActivity() {
 
                  */
                 lifecycleScope.launch {
+                    var user = User(login = login, pass = pass)
+                    userViewModel.addUser(user)
+
+                    Toast.makeText(this@RegistrAct, "Пользователь добавлен", Toast.LENGTH_LONG).show()
+
+                    userLogin.text.clear()
+                    userPass.text.clear()
+                    }
+                /*lifecycleScope.launch {
                     val db = App.database
                     val userdao = db.userDao()
                     var user = User(login = login, pass = pass)
@@ -56,6 +70,8 @@ class RegistrAct : AppCompatActivity() {
                     userLogin.text.clear()
                     userPass.text.clear()
                 }
+
+                 */
 
 
                 //var db = AppDatabase.getInstance(this)

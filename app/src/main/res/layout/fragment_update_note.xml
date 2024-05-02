@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddNoteFragment">
+    tools:context=".UpdateNoteFragment">
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/note_title"
+        android:id="@+id/update_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_16"
@@ -32,7 +32,7 @@
         tools:ignore="Autofill" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/note_desc"
+        android:id="@+id/update_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_16"
@@ -48,14 +48,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/note_title" />
+        app:layout_constraintTop_toBottomOf="@+id/update_title" />
 
     <Button
-        android:id="@+id/add_note_button"
+        android:id="@+id/update_note_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:text="Добавить"
+        android:text="Изменить"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(){
 
         // Получите логин и пароль пользователя
         userViewModel.id = intent.getLongExtra("userId", -1)
-        //Log.d("1", userViewModel.id.toString())
+        Log.d("1", userViewModel.id.toString())
 
         var ft : FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(R.id.frame, homefr)
