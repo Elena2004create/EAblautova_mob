@@ -1,5 +1,6 @@
 package com.example.guide
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ class NotesAdapter: RecyclerView.Adapter<NotesAdapter.NoteHolder>() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(note: List<Note>){
         this.noteList = note
         notifyDataSetChanged()

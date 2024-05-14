@@ -2,7 +2,6 @@ package com.example.guide
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,21 +11,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.guide.MainActivity
-import com.example.guide.NoteViewModel
-import com.example.guide.R
-import com.example.guide.UserViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class NotesFragment : Fragment() {
     lateinit var userViewModel: UserViewModel
     lateinit var noteViewModel: NoteViewModel
+    var notes: List<Note> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,14 +42,35 @@ class NotesFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         val adapter = NotesAdapter()
+
+        if (savedInstanceState != null) {
+            notes = savedInstanceState.getParcelableArrayList("notes") ?: emptyList()
+            adapter.setData(notes)
+            //Log.d("notes", notes[0].title)
+        }
+
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        // Получение данных из savedInstanceState, если они есть
+
+
+
 
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
+        /*
         noteViewModel.getAllNotes(userViewModel.id).observe(viewLifecycleOwner, Observer {note ->
             adapter.setData(note)
+        })
+
+         */
+
+        noteViewModel.getAllNotes(userViewModel.id).observe(viewLifecycleOwner, Observer { notes ->
+            this.notes = notes
+            adapter.setData(notes)
+            //Log.d("notes", notes[0].text)
         })
 
 
@@ -68,6 +86,9 @@ class NotesFragment : Fragment() {
 
         return view
     }
+
+
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_note, menu)
     }
@@ -93,4 +114,9 @@ class NotesFragment : Fragment() {
     }
 
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Сохранение списка заметок в Bundle при уничтожении фрагмента
+        outState.putParcelableArrayList("notes", ArrayList(notes))
+    }
 }

@@ -4,11 +4,16 @@ plugins {
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp") version "1.9.21-1.0.15"
+    kotlin("kapt") version "1.9.23"
 }
 
 android {
     namespace = "com.example.guide"
     compileSdk = 34
+    
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.guide"
@@ -29,6 +34,8 @@ android {
             )
         }
     }
+
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -52,6 +59,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("com.yandex.android:maps.mobile:4.6.1-full")
     val room_version = "2.6.1"
     val nav_version = "2.7.7"
 

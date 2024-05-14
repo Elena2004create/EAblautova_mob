@@ -30,6 +30,30 @@ class NotesRepository(private val noteDao: NoteDao) {
 }
 
 
+class PlacesRepository(private val placeDao: PlaceDao) {
+
+    fun getAllPlaces(id: Long?): LiveData<List<Place>>{
+        return placeDao.getPlacesByUserId(id)
+    }
+
+    suspend fun addPlace(place: Place){
+        placeDao.addPlace(place)
+    }
+
+    suspend fun updatePlace(place: Place){
+        placeDao.updatePlace(place)
+    }
+
+    suspend fun deletePlace(place: Place){
+        placeDao.deletePlace(place)
+    }
+
+    suspend fun deleteAllPlaces(id: Long?){
+        placeDao.deleteAllPlaces(id)
+    }
+}
+
+
 class UsersRepository(private val userDao: UserDao) {
 
     suspend fun insert(user: User){
@@ -39,4 +63,12 @@ class UsersRepository(private val userDao: UserDao) {
     suspend fun getUserId(login: String, pass: String): Long? {
         return userDao.getUserId(login, pass)
     }
+    suspend fun updateUser(user: User){
+        userDao.updateUser(user)
+    }
+
+    suspend fun getUserLogin(id: Long?) : String{
+        return userDao.getUserLogin(id)
+    }
+
 }

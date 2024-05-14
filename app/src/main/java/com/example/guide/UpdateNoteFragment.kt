@@ -14,14 +14,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.guide.R
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.textfield.TextInputEditText
-import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 
 class UpdateNoteFragment : Fragment() {
 
@@ -49,7 +44,7 @@ class UpdateNoteFragment : Fragment() {
 
         val userTitle: TextView = view.findViewById(R.id.update_title)
         val userText: TextView = view.findViewById(R.id.update_desc)
-        val updateBtn: Button = view.findViewById(R.id.update_note_button)
+        val updateBtn: Button = view.findViewById(R.id.update_user_button)
 
         val activity = activity as? MainActivity
         // Получаем экземпляр ViewModel из MainActivity

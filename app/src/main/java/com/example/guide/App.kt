@@ -2,10 +2,12 @@ package com.example.guide
 
 import android.app.Application
 import android.content.Context
+import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Dao
 import androidx.room.Database
@@ -21,6 +23,10 @@ import androidx.room.RoomDatabase
 import androidx.room.Update
 import com.example.guide.NotesRepository
 import com.example.guide.UsersRepository
+import com.yandex.mapkit.GeoObjectCollection
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.directions.driving.DrivingRoute
+import com.yandex.mapkit.geometry.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -34,6 +40,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        MapKitFactory.setApiKey("12b42db8-bb92-4c01-aac5-16894bdc92b3")
         database = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database")
             .build()
     }
@@ -61,10 +68,25 @@ data class Note(
 ): Parcelable
 
 
-@Database(entities = [User::class, Note::class], version = 3)
+@Parcelize
+@Entity
+    (tableName = "places",
+    foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["userId"], onDelete = ForeignKey.CASCADE)])
+data class Place(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val address: String,
+    val userId: Long?
+): Parcelable
+
+
+
+
+@Database(entities = [User::class, Note::class, Place::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun noteDao(): NoteDao
+    abstract fun placeDao(): PlaceDao
     companion object{
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -125,11 +147,17 @@ interface UserDao {
     @Delete
     suspend fun delete(user: User)
 
+    @Update
+    suspend fun updateUser(user: User)
+
     @Query("SELECT * FROM users WHERE login = :login AND pass = :pass")
     suspend fun getUser(login: String, pass: String): User?
 
     @Query("SELECT id FROM users WHERE login = :login AND pass = :pass")
     suspend fun getUserId(login: String, pass: String): Long?
+
+    @Query("SELECT login FROM users WHERE id = :userId")
+    suspend fun getUserLogin(userId: Long?): String
 }
 
 @Dao
@@ -153,6 +181,27 @@ interface NoteDao {
     suspend fun deleteAllNotes(userId: Long?)
 }
 
+@Dao
+interface PlaceDao {
+    @Query("SELECT * FROM places")
+    fun getAllPlaces(): LiveData<List<Place>>
+
+    @Query("SELECT * FROM places WHERE userId = :userId")
+    fun getPlacesByUserId(userId: Long?): LiveData<List<Place>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addPlace(place: Place)
+
+    @Update
+    suspend fun updatePlace(place: Place)
+
+    @Delete
+    suspend fun deletePlace(place: Place)
+
+    @Query("DELETE FROM places WHERE userId = :userId")
+    suspend fun deleteAllPlaces(userId: Long?)
+}
+
 
 class UserViewModel(application: Application): AndroidViewModel(application) {
     var id: Long? = null
@@ -171,7 +220,19 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
     }
 
     suspend fun getUserId(login: String, pass: String): Long? {
-            return repository.getUserId(login, pass)
+        return repository.getUserId(login, pass)
+    }
+
+    fun updateUser(user: User){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateUser(user)
+        }
+    }
+
+    suspend fun getUserLogin(id: Long?): String{
+        return repository.getUserLogin(id)
+
+
     }
     fun setUserId(id: Long){
         this.id = id
@@ -212,6 +273,58 @@ class NoteViewModel(application: Application): AndroidViewModel(application) {
             repository.deleteAllNotes(id)
         }
     }
+}
+
+
+class PlaceViewModel(application: Application): AndroidViewModel(application) {
+
+    private val repository: PlacesRepository
+    init {
+        val placeDao = AppDatabase.getDataBase(application).placeDao()
+        repository = PlacesRepository(placeDao)
+    }
+
+    fun getAllPlaces(id: Long?): LiveData<List<Place>>{
+        return repository.getAllPlaces(id)
+    }
+    fun addPlace(place: Place){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addPlace(place)
+        }
+    }
+
+    fun updatePlace(place: Place){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updatePlace(place)
+        }
+    }
+
+    fun deletePlace(place: Place){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deletePlace(place)
+        }
+    }
+
+    fun deleteAllPlaces(id: Long?){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllPlaces(id)
+        }
+    }
+}
+
+
+
+class LocationViewModel : ViewModel() {
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+
+    var userLatitude: Double = 0.0
+    var userLongitude: Double = 0.0
+
+    var routes: List<DrivingRoute> = emptyList<DrivingRoute>()
+
+    var points: MutableList<GeoObjectCollection.Item> = mutableListOf()
+
 }
 
 

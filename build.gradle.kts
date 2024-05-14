@@ -3,10 +3,15 @@ plugins {
     id("com.android.application") version "8.2.1" apply false
     id("org.jetbrains.kotlin.android") version "1.9.22" apply false
     id("com.google.devtools.ksp") version "1.9.21-1.0.15" apply false
+    kotlin("kapt") version "1.9.23"
 }
 buildscript {
     repositories {
         google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.google.com/")
+        }
     }
     dependencies {
         val nav_version = "2.7.7"
