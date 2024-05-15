@@ -49,6 +49,7 @@ class EditUserProfileFragment : Fragment() {
         binding.apply {
             lifecycleScope.launch {
                 editLogin.setText(userViewModel.getUserLogin(userViewModel.id))
+                editPass.setText(userViewModel.getUserPass(userViewModel.id))
             }
 
             //editPass.setText(args.currentUser.pass)

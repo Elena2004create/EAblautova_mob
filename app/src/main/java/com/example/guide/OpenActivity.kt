@@ -1,12 +1,14 @@
 package com.example.guide
 
 
+import PassDialogFragment
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +16,7 @@ import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.w3c.dom.Text
 
 class OpenActivity : AppCompatActivity() {
 
@@ -25,6 +28,7 @@ class OpenActivity : AppCompatActivity() {
         val enterBtn : Button = findViewById(R.id.enter)
         val userLogin: EditText = findViewById(R.id.user_login)
         val userPass: EditText = findViewById(R.id.user_pass)
+        val passText: TextView = findViewById(R.id.passText)
 
         /*enterBtn.setOnClickListener {
             mainActOpen()
@@ -112,6 +116,11 @@ class OpenActivity : AppCompatActivity() {
                 */
 
             }
+        }
+
+        passText.setOnClickListener(){
+            val dialog = PassDialogFragment(this@OpenActivity)
+            dialog.show(supportFragmentManager, null)
         }
     }
 

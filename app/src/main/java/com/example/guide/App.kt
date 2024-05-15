@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Dao
@@ -158,6 +159,15 @@ interface UserDao {
 
     @Query("SELECT login FROM users WHERE id = :userId")
     suspend fun getUserLogin(userId: Long?): String
+
+    @Query("SELECT pass FROM users WHERE id = :userId")
+    suspend fun getUserPass(userId: Long?): String
+
+    @Query("SELECT pass FROM users WHERE login = :login")
+    suspend fun getUserPassByLogin(login: String): String?
+
+    @Query("SELECT COUNT(*) FROM users WHERE login = :login")
+    suspend fun isUsernameTaken(login: String): Int
 }
 
 @Dao
@@ -207,6 +217,7 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
     var id: Long? = null
 
     private val repository: UsersRepository
+    val registrationResult: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         val userDao = AppDatabase.getDataBase(application).userDao()
@@ -232,8 +243,27 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
     suspend fun getUserLogin(id: Long?): String{
         return repository.getUserLogin(id)
 
-
     }
+
+    suspend fun getUserPass(id: Long?) : String{
+        return repository.getUserPass(id)
+    }
+
+    suspend fun getUserPassByLogin(login: String) : String?{
+        return repository.getUserPassByLogin(login)
+    }
+
+    fun registerUser(login: String, pass: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isTaken = repository.isUsernameTaken(login)
+            if (isTaken) {
+                registrationResult.postValue(false) // Имя пользователя занято
+            } else {
+                registrationResult.postValue(true) // Успешная регистрация
+            }
+        }
+    }
+
     fun setUserId(id: Long){
         this.id = id
     }

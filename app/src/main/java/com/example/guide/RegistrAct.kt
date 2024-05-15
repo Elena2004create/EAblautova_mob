@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
@@ -33,11 +34,29 @@ class RegistrAct : AppCompatActivity() {
         registrBtn.setOnClickListener {
             var login = userLogin.text.toString().trim()
             var pass = userPass.text.toString().trim()
+            userViewModel.registerUser(login, pass)
 
             if (login == "" || pass == "")
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
 
             else {
+                userViewModel.registrationResult.observe(this, Observer { success ->
+                    if (success) {
+
+                        lifecycleScope.launch {
+                            var user = User(login = login, pass = pass)
+                            userViewModel.addUser(user)
+
+                            Toast.makeText(this@RegistrAct, "Пользователь добавлен", Toast.LENGTH_LONG).show()
+
+                            userLogin.text.clear()
+                            userPass.text.clear()
+                        }
+
+                    } else {
+                        Toast.makeText(this, "Такой логин уже занят", Toast.LENGTH_SHORT).show()
+                    }
+                })
                 /*
                 var user = User(id = 1, login = login, pass = pass)
 
@@ -49,7 +68,7 @@ class RegistrAct : AppCompatActivity() {
                 userPass.text.clear()
 
                  */
-                lifecycleScope.launch {
+                /*lifecycleScope.launch {
                     var user = User(login = login, pass = pass)
                     userViewModel.addUser(user)
 
@@ -58,6 +77,8 @@ class RegistrAct : AppCompatActivity() {
                     userLogin.text.clear()
                     userPass.text.clear()
                     }
+
+                 */
                 /*lifecycleScope.launch {
                     val db = App.database
                     val userdao = db.userDao()

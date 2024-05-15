@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -67,6 +68,7 @@ import com.yandex.mapkit.user_location.UserLocationView
 import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
 import com.yandex.runtime.network.NetworkError
+import com.yandex.runtime.network.RemoteError
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -549,9 +551,6 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
     }
 
-    override fun onSearchError(p0: Error) {
-
-    }
 
     fun sumbitQuery(query: String){
         searchSession = searchManager.submit(query, VisibleRegionUtils.toPolygon(mapView.map.visibleRegion),
@@ -669,6 +668,17 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
         }
     }
 
+
+    override fun onSearchError(error: Error) {
+        var errorMessage = "Неизвестная ошибка"
+        if (error is RemoteError){
+            errorMessage = "Беспроводная ошибка"
+        }
+        if (error is NetworkError){
+            errorMessage = "Проблемы с интернетом"
+        }
+        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+    }
 }
 
 

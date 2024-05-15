@@ -71,4 +71,16 @@ class UsersRepository(private val userDao: UserDao) {
         return userDao.getUserLogin(id)
     }
 
+    suspend fun getUserPass(id: Long?) : String{
+        return userDao.getUserPass(id)
+    }
+
+    suspend fun isUsernameTaken(login: String): Boolean {
+        return userDao.isUsernameTaken(login) > 0
+    }
+
+    suspend fun getUserPassByLogin(login: String) : String?{
+        return userDao.getUserPassByLogin(login)
+    }
+
 }
