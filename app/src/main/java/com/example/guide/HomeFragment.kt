@@ -1,27 +1,15 @@
 package com.example.guide
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.guide.databinding.FragmentAddNoteBinding
-import com.example.guide.databinding.FragmentEditUserProfileBinding
 import com.example.guide.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
 
     lateinit var userViewModel: UserViewModel
@@ -38,31 +26,6 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-        // Inflate the layout for this fragment
-        /*
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
-
-        var placesBtn : Button? = view?.findViewById(R.id.placeBtn)
-
-        placesBtn?.setOnClickListener {
-            var fragment = PlacesFragment()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.frame, fragment)
-                .commit()
-        }
-
-        var notesBtn : Button? = view?.findViewById(R.id.noteBtn)
-        notesBtn?.setOnClickListener {
-            var fragment = NavHostFragment()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.frame, fragment)
-                .commit()
-        }
-
-
-        return view
-
-         */
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
@@ -99,6 +62,13 @@ class HomeFragment : Fragment() {
                         .commit()
                 }
 
+                adviceBtn.setOnClickListener(){
+                    var fragment = AdviceFragment()
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.frame, fragment)
+                        .commit()
+                }
+
             }
 
         }
@@ -108,4 +78,13 @@ class HomeFragment : Fragment() {
         retainInstance = true
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    }
 }
