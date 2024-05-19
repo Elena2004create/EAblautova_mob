@@ -1,10 +1,13 @@
 package com.example.guide
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +15,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -51,7 +57,6 @@ import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PolylineMapObject
-import com.yandex.mapkit.map.RotationType
 import com.yandex.mapkit.map.SizeChangedListener
 import com.yandex.mapkit.map.VisibleRegionUtils
 import com.yandex.mapkit.mapview.MapView
@@ -71,8 +76,6 @@ import com.yandex.runtime.network.NetworkError
 import com.yandex.runtime.network.RemoteError
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 
 
 class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListener,
@@ -83,24 +86,20 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
     lateinit var mapView: MapView
     private var locationManager: LocationManager? = null
-    //private var locationListener: LocationListener? = null
-    var latitude: Double = 0.0
-    var longitude: Double = 0.0
     lateinit var locationMapKit: UserLocationLayer
-    lateinit var search: EditText
     lateinit var searchManager: SearchManager
     lateinit var searchSession: Session
     lateinit var text: String
 
     private var listener: DetailsDialogFragment.PlaceSelectionListener? = null
 
-
     private val viewModel: MapViewModel by viewModels()
     private lateinit var binding: FragmentMapBinding
-    //private val map by lazy { binding.mapView.mapWindow.map }
-    private lateinit var map: Map
+    private val map by lazy { binding.mapView.mapWindow.map }
     private val suggestAdapter = SuggestsListAdapter()
     private lateinit var editQueryTextWatcher: TextWatcher
+
+    private lateinit var pLauncher: ActivityResultLauncher<String>
 
 
     private val locationViewModel: LocationViewModel by activityViewModels()
@@ -114,8 +113,8 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
         override fun onDrivingRoutesError(error: Error) {
             when (error) {
-                is NetworkError -> requireContext().showToast("Routes request error due network issues")
-                else -> requireContext().showToast("Routes request unknown error")
+                is NetworkError -> requireContext().showToast("Ошибка подключения к интернету")
+                else -> requireContext().showToast("Неизвестная ошибка")
             }
         }
     }
@@ -137,6 +136,8 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
     private var drivingSession: DrivingSession? = null
     private lateinit var placemarksCollection: MapObjectCollection
     private lateinit var routesCollection: MapObjectCollection
+
+    var userLocation: userLocationListener? = null
 
 
     private val searchResultPlacemarkTapListener = MapObjectTapListener { mapObject, _ ->
@@ -160,13 +161,10 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
             }
             else {
-                //sumbitQuery(text)
                 if (locationViewModel.routes.isNotEmpty())
                     routes = locationViewModel.routes
 
             }
-
-
         }
     }
 
@@ -175,17 +173,26 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
             mapView.map.move(
                 CameraPosition(Point(p0.position.latitude, p0.position.longitude), 15.0f, 0.0f, 0.0f))
 
-
             locationViewModel.userLatitude = p0.position.latitude
             locationViewModel.userLongitude = p0.position.longitude
 
-            Log.d("locationnnn", locationViewModel.userLatitude.toString())
+            userLocation?.userLocation(locationViewModel.userLatitude, locationViewModel.userLongitude)
 
         }
 
         override fun onLocationStatusUpdated(p0: LocationStatus) {
+            Log.d("LocationStatus", LocationStatus.values().toString())
+            when (p0) {
+                LocationStatus.NOT_AVAILABLE -> {
+                    // Служба определения местоположения недоступна (возможно, проблемы с подключением)
+                    requireContext().showToast("Ошибка загрузки, проверьте подключение к интернету")
+                }
+                else -> {}
+            }
 
-        }
+
+
+            }
     }
 
     private val sizeChangedListener = SizeChangedListener { _, _, _ -> updateFocusRect() }
@@ -196,7 +203,6 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
     ): View? {
 
         binding = FragmentMapBinding.inflate(layoutInflater)
-        requestLocationPermission()
         retainInstance = true
         return binding.root
     }
@@ -205,10 +211,11 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkPermission()
+
         MapKitFactory.initialize(requireContext())
 
         mapView = binding.mapView
-        map = binding.mapView.mapWindow.map
 
         map.addCameraListener(cameraListener)
         viewModel.setVisibleRegion(map.visibleRegion)
@@ -233,24 +240,12 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
         drivingRouter = DirectionsFactory.getInstance().createDrivingRouter(DrivingRouterType.COMBINED)
 
-
-
         binding.apply {
             listSuggests.adapter = suggestAdapter
 
-            searchBtn.setOnClickListener { viewModel.startSearch() }
-            resetBtn.setOnClickListener {
-                viewModel.reset()
-                routePoints = emptyList()
-                locationViewModel.latitude = 0.0
-                locationViewModel.longitude = 0.0
-                routes = emptyList()
-                locationViewModel.points.clear()
-                locationViewModel.routes = emptyList()
-            }
-
             locationBtn.setOnClickListener() {
                 locationManager!!.requestSingleUpdate(locationListener)
+                userLocation?.userLocation(locationViewModel.userLatitude, locationViewModel.userLongitude)
                 map.move(
                     CameraPosition(Point(locationViewModel.userLatitude, locationViewModel.userLongitude), 15.0f, 0.0f, 0.0f))
 
@@ -280,16 +275,6 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
                 locationViewModel.points.clear()
                 true
             }
-            Log.d("blablabla", locationViewModel.latitude.toString())
-
-            /*if (locationViewModel.latitude != 0.0 && locationViewModel.longitude != 0.0)
-                routePoints = listOf(
-                    Point(latitude, longitude),
-                    Point(locationViewModel.latitude, locationViewModel.longitude)
-                )
-
-             */
-
 
             routeBtn.setOnClickListener(){
                 routePoints = emptyList()
@@ -303,8 +288,6 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
         }
 
-
-
         viewModel.uiState
             .flowWithLifecycle(lifecycle)
             .onEach {
@@ -313,7 +296,7 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
                     (it.suggestState as? SuggestState.Success)?.items ?: emptyList()
 
                 if (it.suggestState is SuggestState.Error) {
-                    requireContext().showToast("Suggest error, check your network connection")
+                    requireContext().showToast("Ошибка загрузки, проверьте подключение к интернету")
                 }
 
 
@@ -328,7 +311,7 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
                 }
 
                 if (it.searchState is SearchState.Error) {
-                    requireContext().showToast("Search error, check your network connection")
+                    requireContext().showToast("Ошибка загрузки, проверьте подключение к интернету")
                 }
 
                 binding.apply {
@@ -339,18 +322,13 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
                             addTextChangedListener(editQueryTextWatcher)
                         }
                     }
-                    Log.d("searchStatus", it.searchState.toTextStatus())
-                    searchStatus.text =
+                    /*searchStatus.text =
                         "Search: ${it.searchState.toTextStatus()}; Suggest: ${it.suggestState.toTextStatus()}"
                     searchBtn.isEnabled = it.query.isNotEmpty() && it.searchState == SearchState.Off
                     resetBtn.isEnabled =
-                        it.query.isNotEmpty() || it.searchState !is SearchState.Off
+                        it.query.isNotEmpty() || it.searchState !is SearchState.Off*/
                     editQuery.isEnabled = it.searchState is SearchState.Off
-
-
-
                 }
-
 
             }
             .launchIn(lifecycleScope)
@@ -364,8 +342,6 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
     override fun onStart() {
         super.onStart()
-        Log.i("Lifecycle", "On Stop Called")
-        requestLocationPermission()
         MapKitFactory.getInstance().onStart()
         binding.mapView.onStart()
 
@@ -374,21 +350,15 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
     override fun onStop() {
         binding.mapView.onStop()
         MapKitFactory.getInstance().onStop()
-        Log.i("Lifecycle", "On Stop Called")
         super.onStop()
     }
 
-
-    /*override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // Сохранение списка точек маршрута при сворачивании фрагмента
-        outState.putParcelable("routePoints", (locationViewModel))
-
+    fun setUserLocationListener(listener: userLocationListener) {
+        userLocation = listener
     }
 
-     */
-
     override fun onResume() {
+        checkLocation()
 
         if (locationViewModel.routes.isNotEmpty() && locationViewModel.points.isNotEmpty())
             routes = locationViewModel.routes
@@ -397,39 +367,12 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
             updateResponsePlacemarks(locationViewModel.points)
         }
         super.onResume()
-        Log.i("Lifecycle", "On Resume Called")
     }
-
-    // При сворачивании окна сначала вызывается функция onPause
-    override fun onPause() {
-        super.onPause()
-        Log.i("Lifecycle", "On Pause Called")
-    }
-
-
-    // Activity закрылось полностью, это произошло либо по выбору пользователя, либо через код - вызвав функцию finish(), либо не хватило свободной оперативной памяти для открытого приложения и ОС Android очистила память удалив оттуда свернутые приложения.
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("Lifecycle", "On Destroy Called")
-    }
-    /*
-    override fun onDestroy() {
-        placemarksCollection.clear()
-        routesCollection.clear()
-        super.onDestroy()
-    }
-
-     */
-
 
     private fun updateSearchResponsePlacemarks(items: List<SearchResponseItem>) {
         map.mapObjects.clear()
-        //locationViewModel.points.clear()
 
         val imageProvider = ImageProvider.fromResource(requireContext(), R.drawable.mapmark)
-        /*mapView.map.move(
-            CameraPosition(Point(locationViewModel.userLatitude, locationViewModel.userLongitude), 15.0f, 0.0f, 0.0f))
-         */
 
         items.forEach {
             map.mapObjects.addPlacemark().apply {
@@ -446,10 +389,8 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
     }
 
     private fun updateResponsePlacemarks(items: MutableList<GeoObjectCollection.Item>) {
-        //map.mapObjects.clear()
 
         val imageProvider = ImageProvider.fromResource(requireContext(), R.drawable.mapmark)
-
 
         items.forEach {
             map.mapObjects.addPlacemark().apply {
@@ -495,24 +436,7 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
             PointF((mapView.width * 0.5).toFloat(), (mapView.height * 0.83).toFloat())
         )
 
-        Log.d("mapview", mapView.width.toString())
         userLocationView.arrow.setIcon(ImageProvider.fromResource(requireContext(), R.drawable.userlocation), IconStyle().apply { scale = 0.5f })
-
-
-        //locationViewModel.userLatitude = userLocationView.arrow.geometry.latitude
-        //locationViewModel.userLongitude = userLocationView.arrow.geometry.longitude
-
-        /*
-        Log.d("beeeee", locationViewModel.userLatitude.toString())
-        val picIcon = userLocationView.pin.useCompositeIcon()
-        picIcon.setIcon("icon", ImageProvider.fromResource(requireContext(), R.drawable.mapmark), IconStyle().
-        setAnchor(PointF(0f, 0f)).setRotationType(RotationType.ROTATE).setZIndex(0f).setScale(1f))
-
-        picIcon.setIcon("pin", ImageProvider.fromResource(requireContext(), R.drawable.nothing), IconStyle().
-        setAnchor(PointF(0.5f, 0.5f)).setRotationType(RotationType.ROTATE).setZIndex(1f).setScale(0.5f))
-
-         */
-
 
         userLocationView.accuracyCircle.fillColor = Color.BLUE and -0x66000001
     }
@@ -526,54 +450,32 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
     }
 
     override fun onSearchResponse(response: Response) {
-        val mapObjects: MapObjectCollection = mapView.map.mapObjects
-        mapObjects.clear()
-        locationViewModel.points.clear()
-        locationViewModel.routes = emptyList()
-        viewModel.reset()
-            for (searchResult in response.collection.children){
-                val resultLocation = searchResult.obj!!.geometry[0].point!!
-                locationViewModel.points.add(searchResult)
+    val mapObjects: MapObjectCollection = mapView.map.mapObjects
+    mapObjects.clear()
+    locationViewModel.points.clear()
+    locationViewModel.routes = emptyList()
+    viewModel.reset()
+        for (searchResult in response.collection.children){
+            val resultLocation = searchResult.obj!!.geometry[0].point!!
+            locationViewModel.points.add(searchResult)
 
-                if(response != null){
-                    mapObjects.addPlacemark().apply {
-                        geometry = resultLocation
-                        setIcon(ImageProvider.fromResource(requireContext(), R.drawable.mapmark), IconStyle().apply { scale = 0.5f })
-                        addTapListener(searchResultPlacemarkTapListener)
-                        userData = searchResult.obj!!
-                    }
-
-
+            if(response != null){
+                mapObjects.addPlacemark().apply {
+                    geometry = resultLocation
+                    setIcon(ImageProvider.fromResource(requireContext(), R.drawable.mapmark), IconStyle().apply { scale = 0.5f })
+                    addTapListener(searchResultPlacemarkTapListener)
+                    userData = searchResult.obj!!
                 }
+
             }
-        Log.d("points", locationViewModel.points.toString())
-
-
+        }
     }
 
 
     fun sumbitQuery(query: String){
         searchSession = searchManager.submit(query, VisibleRegionUtils.toPolygon(mapView.map.visibleRegion),
             SearchOptions().apply { searchTypes = SearchType.BIZ.value }, this)
-        Log.d("query", query)
     }
-
-    /*override fun onPlaceSelected() {
-        routePoints = listOf(
-            Point(59.929576, 30.291737),
-            Point(59.954093, 30.305770)
-            /*listOf(
-            Point(latitude, longitude),
-            Point(locationViewModel.latitude, locationViewModel.longitude),
-
-             */
-        )
-        Log.d("ерунда", routePoints[1].latitude.toString())
-    }
-
-     */
-
-
 
     private fun onRoutePointsUpdated() {
         placemarksCollection.clear()
@@ -647,266 +549,70 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
         routePoints = listOf(
             Point(latitude, longitude),
             Point(locationViewModel.userLatitude, locationViewModel.userLongitude)
-            /*listOf(
-            Point(latitude, longitude),
-            Point(locationViewModel.latitude, locationViewModel.longitude),
-
-             */
         )
 
         locationViewModel.latitude = latitude
         locationViewModel.longitude = longitude
-        Log.d("ерунда", routePoints[0].latitude.toString())
     }
 
     fun requestLocationPermission(){
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        /*if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 0)
             locationManager?.requestSingleUpdate(locationListener)
-            return
-        }
-    }
 
+         */
 
-    override fun onSearchError(error: Error) {
-        var errorMessage = "Неизвестная ошибка"
-        if (error is RemoteError){
-            errorMessage = "Беспроводная ошибка"
-        }
-        if (error is NetworkError){
-            errorMessage = "Проблемы с интернетом"
-        }
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-    }
-}
-
-
-/*
-        var view = inflater.inflate(R.layout.fragment_map, container, false)
-
-        retainInstance = true
-
-        if (savedInstanceState != null) {
-            latitude = savedInstanceState.getDouble("latitude") ?: 0.0
-            longitude = savedInstanceState.getDouble("longitude")
-            Log.d("sssssh", latitude.toString())
-        }
-        Log.d("sssssh", latitude.toString())
-
-
-
-        MapKitFactory.initialize(requireContext())
-        mapView = view.findViewById(R.id.mapView)
-
-
-        var locationBtn: Button = view.findViewById(R.id.locationBtn)
-
-        var foodBtn: Button = view.findViewById(R.id.foodBtn)
-        text = "где поесть"
-
-        requestLocationPermission()
-        Log.d("locationnnnn", "")
-
-        foodBtn.setOnClickListener(){
-            sumbitQuery(text)
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        )
+        return
         }
 
-        locationManager = MapKitFactory.getInstance().createLocationManager()
 
-        locationMapKit = MapKitFactory.getInstance().createUserLocationLayer(mapView.mapWindow)
-
-        //locationManager!!.requestSingleUpdate(this)
-        
-        locationBtn.setOnClickListener(){
-
-            locationManager!!.requestSingleUpdate(this)
-            /*
-            Log.d("locationnnnn", "")
-            locationManager?.requestSingleUpdate(object : LocationListener {
-
-                override fun onLocationUpdated(p0: Location) {
-                    mapView.map.move(
-                        CameraPosition(Point(p0.position.latitude, p0.position.longitude), 15.0f, 0.0f, 0.0f))
-                    /*latitude = p0.position.latitude
-                    longitude = p0.position.longitude
-
-                    saveCoordinates(latitude, longitude)
-
-                     */
-
-
-                    Log.d("locationnnnn", p0.position.latitude.toString())
-
-                }
-
-                override fun onLocationStatusUpdated(p0: LocationStatus) {
-                    showMessage(p0.toString())
-                    Log.d("locationnnnn", p0.toString())
-
+    fun checkLocation(){
+        if(isLocationEnabled()){
+            requestLocationPermission()
+        } else {
+            DialogManager.locationSettingsDialog(requireContext(), object : DialogManager.Listener{
+                override fun onClick() {
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
             })
-            */
-        }
-
-
-
-
-
-        /*mapView.map.move(
-            CameraPosition(Point(0.0, 0.0), 15.0f, 0.0f, 0.0f),
-            Animation(Animation.Type.SMOOTH, 10f), null)
-
-
-         */
-
-        locationMapKit.isVisible = true
-        //mapView.map.move(CameraPosition(Point(90.0, 80.0), 15.0f, 0.0f, 0.0f))
-        Log.d("shutup", latitude.toString())
-        locationMapKit.setObjectListener(this)
-
-        searchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.COMBINED)
-        mapView.map.addCameraListener(this)
-
-        //mapView.map.addTapListener(this)
-
-
-
-        /*
-
-        requestLocationPermission()
-
-        var userLocation = mapKit.createUserLocationLayer(mapView.mapWindow)
-        userLocation.isVisible = true
-
-         */
-
-
-        return view
-    }
-
-    fun sumbitQuery(query: String){
-        searchSession = searchManager.submit(query, VisibleRegionUtils.toPolygon(mapView.map.visibleRegion),
-            SearchOptions().apply { searchTypes = SearchType.BIZ.value }, this)
-        Log.d("query", query)
-    }
-
-
-    private fun saveCoordinates(latitude: Double, longitude: Double) {
-        this.latitude = latitude
-        this.longitude = longitude
-    }
-
-    private fun showMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-    }
-
-    /*
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        var mapView = view.findViewById<MapView>(R.id.mapView)
-
-    }
-
-     */
-
-    override fun onSaveInstanceState(outState: Bundle) {
-
-        // Сохранение списка заметок в Bundle при уничтожении фрагмента
-        outState.putDouble("latitude", latitude)
-        outState.putDouble("longitude", longitude)
-        super.onSaveInstanceState(outState)
-    }
-
-
-    fun requestLocationPermission(){
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 0)
-            return
         }
     }
 
-    override fun onStart() {
-        mapView.onStart()
-        MapKitFactory.getInstance().onStart()
-        locationListener?.let { locationManager?.unsubscribe(it) }
-        super.onStart()
-        Log.d("locationnnnn", "start")
+    fun isLocationEnabled(): Boolean{
+        val lm = activity?.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
+        return lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
     }
 
-    override fun onPause() {
-        locationListener?.let { locationManager?.unsubscribe(it) }
-        super.onPause()
-        Log.d("locationnnnn", "pause")
-    }
-    override fun onResume() {
-        locationListener?.let { locationManager?.unsubscribe(it) }
-        super.onResume()
-        Log.d("locationnnnn", "resume")
-    }
-
-
-    override fun onStop() {
-        mapView.onStop()
-        MapKitFactory.getInstance().onStop()
-        locationListener?.let { locationManager?.unsubscribe(it) }
-        super.onStop()
-        Log.d("locationnnnn", "stop")
-    }
-
-    override fun onObjectAdded(userLocationView: UserLocationView) {
-        locationMapKit.setAnchor(
-            PointF((mapView.width * 0.5).toFloat(), (mapView.height * 0.5).toFloat()),
-            PointF((mapView.width * 0.5).toFloat(), (mapView.height * 0.83).toFloat())
-        )
-        Log.d("mapview", mapView.width.toString())
-        userLocationView.arrow.setIcon(ImageProvider.fromResource(requireContext(), R.drawable.userlocation))
-        val picIcon = userLocationView.pin.useCompositeIcon()
-        picIcon.setIcon("icon", ImageProvider.fromResource(requireContext(), R.drawable.mapmark), IconStyle().
-        setAnchor(PointF(0f, 0f)).setRotationType(RotationType.ROTATE).setZIndex(0f).setScale(1f))
-
-        picIcon.setIcon("pin", ImageProvider.fromResource(requireContext(), R.drawable.nothing), IconStyle().
-        setAnchor(PointF(0.5f, 0.5f)).setRotationType(RotationType.ROTATE).setZIndex(1f).setScale(0.5f))
-
-
-        userLocationView.accuracyCircle.fillColor = Color.BLUE and -0x66000001
-    }
-
-    override fun onObjectRemoved(p0: UserLocationView) {
-
-    }
-
-    override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {
-
-    }
-
-
-
-
-    override fun onSearchResponse(response: Response) {
-        val mapObjects: MapObjectCollection = mapView.map.mapObjects
-        mapObjects.clear()
-        for (searchResult in response.collection.children){
-            val resultLocation = searchResult.obj!!.geometry[0].point!!
-            Log.d("result", searchResult.obj!!.geometry[0].toString())
-            Log.d("response", response.collection.children.toString())
-            if(response != null){
-                    mapObjects.addPlacemark().apply {
-                        geometry = resultLocation
-                        setIcon(ImageProvider.fromResource(requireContext(), R.drawable.mapmark))
-                        addTapListener(searchResultPlacemarkTapListener)
-                        userData = searchResult.obj!!
-                }
-                //var metadata = searchResult.obj!!.metadataContainer.getItem(BusinessObjectMetadata::class.java)
-                //Log.d("searchResult", placeMap[searchResult.obj!!].toString())
-                Log.d("mark", mapObjects.toString())
-            }
+    fun permissionListener(){
+        pLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()){
+            Toast.makeText(activity, "Разрешение получено", Toast.LENGTH_LONG).show()
         }
     }
+
+    fun checkPermission(){
+        if(!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)){
+            permissionListener()
+            pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    private fun isPermissionGranted(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
 
     override fun onSearchError(error: Error) {
-        var errorMessage = "Неизвестная ошибка"
+        var errorMessage = "Ошибка подключения"
         if (error is RemoteError){
             errorMessage = "Беспроводная ошибка"
         }
@@ -916,77 +622,11 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
         Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
     }
 
-    override fun onCameraPositionChanged(
-        map: Map,
-        cameraPosition: CameraPosition,
-        cameraUpdateReason: CameraUpdateReason,
-        finished: Boolean
-    ) {
-        if (finished){
-            sumbitQuery(text)
-        }
+
+    interface userLocationListener{
+        fun userLocation(latitude: Double, longitude: Double)
     }
-
-    override fun onLocationUpdated(p0: Location) {
-        mapView.map.move(
-            CameraPosition(Point(p0.position.latitude, p0.position.longitude), 15.0f, 0.0f, 0.0f))
-    }
-
-    override fun onLocationStatusUpdated(p0: LocationStatus) {
-        showMessage(p0.toString())
-        Log.d("locationnnnn", p0.toString())
-    }
-
-    /*
-    override fun onObjectTap(p0: GeoObjectTapEvent): Boolean {
-
-        val tappedGeoObject = p0.geoObject
-
-        //val businessObjectMetadata = tappedGeoObject.metadataContainer.getItem( BusinessObjectMetadata::class.java)
-        /*Log.d("searchResult",
-            placeMap.contains(tappedGeoObject.metadataContainer.getItem(GeoObjectSelectionMetadata::class.java).objectId)
-                .toString()
-        )
-
-         */
-            //Log.d("tappedGeoObject", businessObjectMetadata?.address.toString())
-
-            // Здесь вы можете получить информацию о нажатом объекте и показать её пользователю
-            val objectName = tappedGeoObject.name ?: "Unknown"
-            val objectAddr = placeMap[tappedGeoObject.metadataContainer.getItem(GeoObjectSelectionMetadata::class.java).objectId]?.address?.formattedAddress.toString() ?: "Unknown"
-
-            // Ваш код для отображения информации о нажатом объекте
-            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.place_dialog, null)
-            val dialogBuilder = AlertDialog.Builder(requireContext()).setView(dialogView).setTitle("Информация о месте")
-
-            val placeName = dialogView.findViewById<TextView>(R.id.placeName)
-            val placeAddress = dialogView.findViewById<TextView>(R.id.placeAddress)
-            placeName.text = objectName
-            placeAddress.text = objectAddr
-
-            val dialog = dialogBuilder.create()
-            dialog.show()
-
-        // Возвращаем true, чтобы показать, что событие обработано
-        return true
-    }
-
-
-
-    override fun onMapObjectTap(p0: MapObject, p1: Point): Boolean {
-        TODO("Not yet implemented")
-    }
-
-
-     */
-
 }
-
-
-
-
- */
-
 
 object SelectedObjectHolder {
     var selectedObject: GeoObject? = null

@@ -63,29 +63,7 @@ class MapViewModel : ViewModel() {
     private val searchState = MutableStateFlow<SearchState>(SearchState.Off)
     private val suggestState = MutableStateFlow<SuggestState>(SuggestState.Off)
 
-
-    private val drivingRouteListener = object : DrivingSession.DrivingRouteListener {
-        override fun onDrivingRoutes(drivingRoutes: MutableList<DrivingRoute>) {
-            val routes = drivingRoutes
-        }
-
-        override fun onDrivingRoutesError(error: Error) {
-            when (error) {
-                //is NetworkError -> ContextCompat.showToast("Routes request error due network issues")
-                //else -> requireContext.showToast("Routes request unknown error")
-            }
-        }
-    }
-
-
-
-
-    private var drivingRouter = DirectionsFactory.getInstance().createDrivingRouter(
-        DrivingRouterType.COMBINED)
     private var drivingSession: DrivingSession? = null
-
-
-
 
     val uiState: StateFlow<MapUiState> = combine(
         query,
@@ -260,97 +238,4 @@ class MapViewModel : ViewModel() {
                     or SuggestType.TRANSIT.value
         )
     }
-
-
-    fun subscribeForRouteUpdate(): Flow<*> {
-        return throttledRegion.filter { it != null }
-            .mapNotNull { it }
-            .onEach { region ->
-                updateRoute(region)
-            }
-    }
-
-    private fun updateRoute(region: VisibleRegion) {
-        // Вместо searchSession вам нужно будет использовать ваш drivingRouter или drivingSession
-        drivingSession?.let {
-            // Например, вы можете обновить область поиска ваших маршрутов на основе нового региона карты
-            it.retry(drivingRouteListener)
-            // После этого перезапросите маршрут с помощью вашего drivingRouter
-            // Например:
-            // it.resubmit(drivingRouteListener)
-            // Здесь drivingRouteListener - ваш слушатель для получения обновленных данных о маршруте
-        }
-    }
-
-
-    /*
-    private fun onRoutePointsUpdated() {
-        placemarksCollection.clear()
-
-        if (routePoints.isEmpty()) {
-            drivingSession?.cancel()
-            routes = emptyList()
-            return
-        }
-
-        val imageProvider = ImageProvider.fromResource(requireContext(), R.drawable.bullet)
-        routePoints.forEach {
-            placemarksCollection.addPlacemark().apply {
-                geometry = it
-                setIcon(imageProvider, IconStyle().apply {
-                    scale = 0.5f
-                    zIndex = 20f
-                })
-            }
-        }
-
-        if (routePoints.size < 2) return
-
-        val requestPoints = buildList {
-            add(RequestPoint(routePoints.first(), RequestPointType.WAYPOINT, null, null))
-            addAll(
-                routePoints.subList(1, routePoints.size - 1)
-                    .map { RequestPoint(it, RequestPointType.VIAPOINT, null, null) })
-            add(RequestPoint(routePoints.last(), RequestPointType.WAYPOINT, null, null))
-        }
-
-        val drivingOptions = DrivingOptions()
-        val vehicleOptions = VehicleOptions()
-
-        drivingSession = drivingRouter.requestRoutes(
-            requestPoints,
-            drivingOptions,
-            vehicleOptions,
-            drivingRouteListener,
-        )
-    }
-
-    private fun onRoutesUpdated() {
-        routesCollection.clear()
-        if (routes.isEmpty()) return
-
-        routes.forEachIndexed { index, route ->
-            routesCollection.addPolyline(route.geometry).apply {
-                if (index == 0) styleMainRoute() else styleAlternativeRoute()
-            }
-        }
-    }
-
-    private fun PolylineMapObject.styleMainRoute() {
-        zIndex = 10f
-        setStrokeColor(ContextCompat.getColor(requireContext(), CommonColors.blue))
-        strokeWidth = 5f
-        outlineColor = ContextCompat.getColor(requireContext(), CommonColors.black)
-        outlineWidth = 3f
-    }
-
-    private fun PolylineMapObject.styleAlternativeRoute() {
-        zIndex = 5f
-        setStrokeColor(ContextCompat.getColor(requireContext(), CommonColors.white))
-        strokeWidth = 4f
-        outlineColor = ContextCompat.getColor(requireContext(), CommonColors.black)
-        outlineWidth = 2f
-    }
-
-     */
 }

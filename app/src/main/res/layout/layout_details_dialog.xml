@@ -3,29 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@color/semi_black">
 
     <TextView
         android:id="@+id/text_title"
         style="@style/TextAppearance.AppCompat.Body2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Coffee shop" />
+        tools:text="Coffee shop"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_bold"/>
 
     <TextView
         android:id="@+id/text_subtitle"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Dubai, Sheikh Zayed Road, 144" />
+        tools:text="Dubai, Sheikh Zayed Road, 144"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_semibold"/>
 
     <TextView
         android:id="@+id/text_place"
         style="@style/TextAppearance.AppCompat.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="55.644, 43.53456" />
+        tools:text="55.644, 43.53456"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_medium"/>
 
     <TextView
         android:id="@+id/text_type"
@@ -33,7 +41,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        tools:text="Type: Organisation" />
+        tools:text="Type: Organisation"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_medium"/>
 
     <LinearLayout
         android:id="@+id/layout_toponym_info"
@@ -41,13 +51,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_medium">
 
         <TextView
             android:id="@+id/text_toponym_address"
             style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_medium"/>
 
     </LinearLayout>
 
@@ -63,32 +77,36 @@
             android:id="@+id/text_business_name"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/text_business_working_hours"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/text_business_categories"
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/text_business_phones"
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/text_business_links"
-            style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:autoLink="web" />
+            android:autoLink="web"
+            android:textColorLink="@color/semi_green"/>
 
     </LinearLayout>
 
@@ -98,20 +116,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        tools:text="ymapsbm://org?oid=16642345" />
+        tools:text="ymapsbm://org?oid=16642345"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_medium"/>
 
-    <Button
-        android:id="@+id/addPlaceBtn"
-        android:layout_width="167dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Добавить место" />
+        android:orientation="horizontal"
+        android:layout_gravity="center">
 
-    <Button
-        android:id="@+id/routeBtn"
-        android:layout_width="167dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Маршрут" />
+        <Button
+            android:id="@+id/addPlaceBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/rounded_btn_bg"
+            android:fontFamily="@font/inter_bold"
+            android:text="Добавить место"
+            android:textColor="#393D40"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/routeBtn"
+            android:layout_width="167dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_btn_bg"
+            android:fontFamily="@font/inter_bold"
+            android:text="Маршрут"
+            android:textColor="#393D40"
+            app:backgroundTint="@null"/>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

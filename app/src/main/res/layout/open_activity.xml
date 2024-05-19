@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/light_green"
-    android:focusable="auto">
+    android:backgroundTint="@null"
+    android:focusable="auto"
+    android:background="@color/dark_black">
 
     <EditText
-        android:id="@+id/user_pass"
+        android:id="@+id/userPass"
         android:layout_width="320dp"
         android:layout_height="46dp"
         android:backgroundTint="@color/light_green"
@@ -16,6 +17,8 @@
         android:focusable="true"
         android:fontFamily="@font/inter_semibold"
         android:hint="Введите пароль"
+        android:textColorHint="@color/hint_color"
+        android:textColor="@color/white"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,10 +31,11 @@
         android:layout_marginTop="12dp"
         android:fontFamily="@font/inter_bold"
         android:text="Пароль"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.131"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_login" />
+        app:layout_constraintTop_toBottomOf="@+id/userLogin" />
 
     <Button
         android:id="@+id/registrBtn"
@@ -47,7 +51,7 @@
         android:textColor="@color/light_green"
         android:textScaleX="0.95"
         android:textSize="12sp"
-        app:cornerRadius="30dp"
+        app:cornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passText"
@@ -55,7 +59,7 @@
         app:strokeWidth="4dp" />
 
     <EditText
-        android:id="@+id/user_login"
+        android:id="@+id/userLogin"
         android:layout_width="317dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/light_green"
@@ -63,6 +67,8 @@
         android:focusable="true"
         android:fontFamily="@font/inter_semibold"
         android:hint="Введите логин"
+        android:textColorHint="@color/hint_color"
+        android:textColor="@color/white"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,6 +80,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
         android:text="Имя пользователя"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.167"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,6 +93,7 @@
         android:layout_marginTop="20dp"
         android:fontFamily="@font/inter_semibold"
         android:text="Забыли пароль?"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +113,7 @@
         app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_pass" />
+        app:layout_constraintTop_toBottomOf="@+id/userPass" />
 
     <ImageView
         android:id="@+id/earth"
@@ -121,9 +129,10 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="48dp"
         android:fontFamily="@font/inter_bold"
         android:text="Добро пожаловать!"
+        android:textColor="@color/white"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

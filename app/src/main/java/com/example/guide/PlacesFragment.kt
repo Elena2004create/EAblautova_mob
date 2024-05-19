@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.guide.databinding.FragmentNotesBinding
+import com.example.guide.databinding.FragmentPlacesBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -26,12 +28,18 @@ class PlacesFragment : Fragment(), PlacesAdapter.Listener {
     lateinit var placeViewModel: PlaceViewModel
     var places: MutableList<Place> = emptyList<Place>().toMutableList()
     lateinit var adapter: PlacesAdapter
+    lateinit var binding: FragmentPlacesBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_places, container, false)
+        binding = FragmentPlacesBinding.inflate(layoutInflater)
+
+        retainInstance = true
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val activity = activity as? MainActivity
         // Получаем экземпляр ViewModel из MainActivity
@@ -39,50 +47,42 @@ class PlacesFragment : Fragment(), PlacesAdapter.Listener {
             userViewModel = activity.userViewModel
         }
 
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+        val toolbar = binding.toolbar
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         adapter = PlacesAdapter(this)
         if (savedInstanceState != null) {
             places = savedInstanceState.getParcelableArrayList("places") ?: emptyList<Place>().toMutableList()
             adapter.setData(places)
-            //Log.d("notes", notes[0].title)
         }
 
-
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Получение данных из savedInstanceState, если они есть
-
-
-
-
         placeViewModel = ViewModelProvider(this).get(PlaceViewModel::class.java)
-        /*
-        noteViewModel.getAllNotes(userViewModel.id).observe(viewLifecycleOwner, Observer {note ->
-            adapter.setData(note)
-        })
-
-         */
 
         placeViewModel.getAllPlaces(userViewModel.id).observe(viewLifecycleOwner, Observer { places ->
             this.places = places.toMutableList()
             adapter.setData(places.toMutableList())
-            //Log.d("notes", notes[0].text)
         })
-
-
-        //Log.d("1", userViewModel.id.toString())
 
         setHasOptionsMenu(true)
 
+    }
 
-        // Получите логин и пароль пользователя
 
+    private fun deleteAllPlaces(id: Long?) {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Да"){ _, _ ->
+            placeViewModel.deleteAllPlaces(id)
+            Toast.makeText(requireContext(), "Удалены все места", Toast.LENGTH_LONG).show()
+        }
+        builder.setNegativeButton("Нет"){ _, _ ->
 
-        return view
+        }
+        builder.setTitle("Удалить все места?")
+        builder.create().show()
     }
 
 
@@ -92,32 +92,10 @@ class PlacesFragment : Fragment(), PlacesAdapter.Listener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.delete_menu){
-
-            if (item.itemId == R.id.delete_menu){
-
-            }
-            return super.onOptionsItemSelected(item)
-
+            deleteAllPlaces(userViewModel.id)
         }
         return super.onOptionsItemSelected(item)
     }
-
-    /*
-    private fun deletePlace() {
-        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Да"){ _, _ ->
-            placeViewModel.deletePlace()
-            Toast.makeText(requireContext(), "Удалена заметка: ${args.currentNote.title}", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.action_updateNoteFragment_to_notesFragment)
-        }
-        builder.setNegativeButton("Нет"){ _, _ ->
-
-        }
-        builder.setTitle("Удалить ${args.currentNote.title}?")
-        builder.create().show()
-    }
-
-     */
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

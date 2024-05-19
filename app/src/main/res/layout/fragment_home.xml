@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#222522"
     android:focusable="auto">
 
 
@@ -12,30 +13,43 @@
         android:layout_width="320dp"
         android:layout_height="60dp"
         android:layout_marginBottom="392dp"
-        android:fontFamily="@font/montserrat_medium"
+        android:background="@drawable/rounded_btn_bg"
+        android:fontFamily="@font/inter_bold"
         android:text="Места"
+        android:textColor="#393D40"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userName"
+        app:layout_constraintVertical_bias="0.968" />
 
     <Button
         android:id="@+id/noteBtn"
         android:layout_width="320dp"
         android:layout_height="60dp"
-        android:text="заметки"
+        android:background="@drawable/rounded_btn_bg"
+        android:fontFamily="@font/inter_bold"
+        android:text="Заметки"
+        android:textColor="#393D40"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/placeBtn"
-        app:layout_constraintVertical_bias="0.162" />
+        app:layout_constraintVertical_bias="0.171" />
 
     <Button
         android:id="@+id/adviceBtn"
         android:layout_width="320dp"
         android:layout_height="60dp"
-        android:text="советы"
+        android:background="@drawable/rounded_btn_bg"
+        android:fontFamily="@font/inter_bold"
+        android:text="Советы"
+        android:textColor="#393D40"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
@@ -47,17 +61,23 @@
         android:id="@+id/editBtn"
         android:layout_width="320dp"
         android:layout_height="60dp"
-        android:text="редактироватьт"
+        android:background="@drawable/rounded_btn_bg"
+        android:fontFamily="@font/inter_bold"
+        android:text="Редактировать профиль"
+        android:textColor="#393D40"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adviceBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/adviceBtn"
+        app:layout_constraintVertical_bias="0.536" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="94dp"
         android:layout_height="87dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -72,43 +92,53 @@
         android:layout_marginTop="12dp"
         android:fontFamily="@font/inter_semibold"
         android:text="userName"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.012" />
 
     <TextView
         android:id="@+id/location"
-        android:layout_width="140dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="228dp"
+        android:layout_height="52dp"
         android:fontFamily="@font/inter_medium"
         android:text="Россия, Москва"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.195"
+        app:layout_constraintHorizontal_bias="0.245"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.063" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="33dp"
         android:layout_height="24dp"
-        android:layout_marginTop="44dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/location"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.061"
         app:srcCompat="@drawable/location" />
 
     <ImageButton
         android:id="@+id/exitBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_width="45dp"
+        android:layout_height="38dp"
+        android:background="@drawable/main_activity_btn"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.905"
+        app:layout_constraintHorizontal_bias="0.91"
         app:layout_constraintStart_toEndOf="@+id/location"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.052"
         app:srcCompat="@drawable/baseline_exit_to_app_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

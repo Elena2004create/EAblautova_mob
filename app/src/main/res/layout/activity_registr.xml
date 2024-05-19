@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_black"
     tools:context=".RegistrAct">
 
     <TextView
@@ -14,6 +15,7 @@
         android:fontFamily="@font/inter_bold"
         android:text="Регистрация"
         android:textAlignment="center"
+        android:textColor="@color/background"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -74,6 +76,7 @@
         android:fontFamily="@font/inter_semibold"
         android:text="Войти в аккаунт"
         android:textAlignment="center"
+        android:textColor="@color/background"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

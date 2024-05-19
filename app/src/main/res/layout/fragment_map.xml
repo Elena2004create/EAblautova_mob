@@ -6,18 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".MapFragment">
 
+
     <com.yandex.mapkit.mapview.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="630dp"
-        android:layout_marginBottom="100dp"
+        android:layout_height="match_parent"
+        android:background="@color/dark_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.207">
 
 
-        <Button
+        <!--<Button
             android:id="@+id/locationBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,9 +28,9 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="568dp"
             android:layout_marginEnd="15dp"
-            android:text="Локация" />
+            android:text="Локация" />-->
 
-        <Button
+        <!--<Button
             android:id="@+id/routeBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,9 +38,20 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="568dp"
             android:layout_marginEnd="286dp"
-            android:text="Маршрут" />
-    </com.yandex.mapkit.mapview.MapView>
+            android:text="Маршрут" />-->
 
+
+
+        <!--<Button
+            android:id="@+id/landmarkBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="256dp"
+            android:layout_marginBottom="16dp"
+            android:text="Куда сходить" />-->
+
+
+    </com.yandex.mapkit.mapview.MapView>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -50,14 +64,25 @@
 
         <EditText
             android:id="@+id/editQuery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="233dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:hint="Search"
+            android:background="@color/bg_green"
+            android:backgroundTint="@null"
+            android:fontFamily="@font/inter_medium"
+            android:hint="Поиск"
             android:inputType="text"
             android:lines="1" />
 
-        <Button
+        <ImageButton
+            android:id="@+id/routeBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+
+            android:background="@color/semi_green"
+            android:src="@drawable/baseline_refresh_24" />
+
+        <!--<Button
             android:id="@+id/resetBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +92,7 @@
             android:id="@+id/searchBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="search" />
+            android:text="search" />-->
 
     </LinearLayout>
 
@@ -75,6 +100,7 @@
         android:id="@+id/listSuggests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/bg_green"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +116,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listSuggests" />
 
-    <Button
+    <ImageButton
+        android:id="@+id/foodBtn"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/map_btn_bg"
+        android:src="@drawable/baseline_fastfood_24"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.121"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/hotelBtn"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/map_btn_bg"
+        android:src="@drawable/baseline_hotel_24"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/landmarkBtn"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toEndOf="@+id/foodBtn" />
+
+    <ImageButton
+        android:id="@+id/landmarkBtn"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/map_btn_bg"
+        android:src="@drawable/baseline_attractions_24"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.878"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/locationBtn"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="36dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/check_location"
+        app:layout_constraintBottom_toTopOf="@+id/landmarkBtn"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!--<Button
         android:id="@+id/foodBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,9 +177,9 @@
         android:layout_marginBottom="16dp"
         android:text="Еда"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />-->
 
-    <Button
+    <!--<Button
         android:id="@+id/hotelBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -108,16 +187,6 @@
         android:layout_marginBottom="16dp"
         android:text="Отели"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/landmarkBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="256dp"
-        android:layout_marginBottom="16dp"
-        android:text="Куда сходить"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

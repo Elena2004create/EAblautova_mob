@@ -4,35 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_black"
     tools:context=".AddNoteFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
+        android:layout_height="50dp"
+        android:background="@color/bg_green"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/note_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:background="@null"
+        android:fontFamily="@font/inter_bold"
         android:gravity="start"
-        android:hint="@string/title_hint"
+        android:hint="Название"
         android:inputType="textCapSentences|textMultiLine"
         android:maxLength="60"
         android:maxLines="3"
         android:padding="@dimen/dimen_12"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        android:textColor="@color/title_text_color"
+        android:textColor="@color/white"
         android:textColorHint="@color/hint_color"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:ignore="Autofill" />
 
@@ -41,9 +45,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@null"
+        android:fontFamily="@font/inter_medium"
         android:gravity="start"
-        android:hint="@string/desc_hint"
+        android:hint="Содержание заметки"
+        android:textColorHint="@color/hint_color"
         android:lineSpacingExtra="5dp"
+        android:textColor="@color/white"
         android:padding="@dimen/dimen_12"
         android:paddingBottom="@dimen/dimen_64"
         android:scrollbars="vertical"
@@ -56,11 +63,14 @@
         android:id="@+id/add_note_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:background="@drawable/rounded_btn_bg"
+        android:fontFamily="@font/inter_bold"
         android:text="Добавить"
+        android:textColor="#393D40"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.471"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

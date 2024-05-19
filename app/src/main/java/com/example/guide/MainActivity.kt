@@ -24,31 +24,30 @@ class MainActivity : AppCompatActivity(){
 
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
-        // Получите логин и пароль пользователя
         userViewModel.id = intent.getLongExtra("userId", -1)
-        //Log.d("1", userViewModel.id.toString())
 
         if (savedInstanceState == null) {
-            // Создаем экземпляры фрагментов только если активити создается впервые
+
             var homeFragment = HomeFragment()
             var mapFragment = MapFragment()
             setFragment(homeFragment)
-            Log.d("notes", "че за х")
         }
         else {
-            // Восстанавливаем текущий фрагмент из savedInstanceState, если он был сохранен
+
             val currentFragmentTag = savedInstanceState.getString("currentFragmentTag")
             val currentFragment = supportFragmentManager.findFragmentByTag(currentFragmentTag)
             if (currentFragment != null) {
                 setFragment(currentFragment)
             }
-            Log.d("notes", "че за х")
         }
 
         val homeBtn: ImageButton = findViewById(R.id.homeBtn)
         val mapBtn: ImageButton = findViewById(R.id.mapBtn)
 
         val homeFragment = HomeFragment()
+
+        /*val mapFragment = MapFragment()
+        mapFragment.setUserLocationListener(homeFragment)*/
 
         setFragment(homeFragment)
 
@@ -58,6 +57,7 @@ class MainActivity : AppCompatActivity(){
 
         mapBtn.setOnClickListener(){
             val mapFragment = MapFragment()
+            mapFragment.setUserLocationListener(homeFragment)
             setFragment(mapFragment)
         }
 
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity(){
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // Сохраняем тег текущего фрагмента, чтобы мы могли восстановить его при повороте экрана
+
         val currentFragment = supportFragmentManager.findFragmentById(R.id.frame)
         if (currentFragment != null) {
             outState.putString("currentFragmentTag", currentFragment.tag)

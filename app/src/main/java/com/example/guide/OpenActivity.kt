@@ -2,7 +2,9 @@ package com.example.guide
 
 
 import PassDialogFragment
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
@@ -47,7 +51,7 @@ class OpenActivity : AppCompatActivity() {
                     lifecycleScope.launch {
                         val user = withContext(Dispatchers.IO) {
                             userViewModel.getUserId(login, pass)
-                            //
+
                         }
 
                         if (user != null){
@@ -73,8 +77,6 @@ class OpenActivity : AppCompatActivity() {
                 dialog.show(supportFragmentManager, null)
             }
         }
-
-
     }
 
     fun registrActOpen(){

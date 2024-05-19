@@ -1,5 +1,6 @@
 package com.example.guide
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -44,8 +45,6 @@ class EditUserProfileFragment : Fragment() {
             userViewModel = activity.userViewModel
         }
 
-        //userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-
         binding.apply {
             lifecycleScope.launch {
                 editLogin.setText(userViewModel.getUserLogin(userViewModel.id))
@@ -68,6 +67,16 @@ class EditUserProfileFragment : Fragment() {
             }
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 
 }

@@ -7,14 +7,14 @@
     android:layout_margin="@dimen/dimen_8"
     app:cardElevation="@dimen/dimen_0"
     android:id="@+id/rowLayout"
-    app:cardBackgroundColor="@color/card_bg"
-    app:cardCornerRadius="@dimen/dimen_4"
-    >
+    app:backgroundTint="@null"
+    app:cardBackgroundColor="@color/bg_green"
+    app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?selectableItemBackground">
+        android:background="@drawable/main_activity_btn">
 
         <TextView
             android:id="@+id/item_place_title"
@@ -23,6 +23,7 @@
             android:layout_marginStart="@dimen/dimen_16"
             android:layout_marginTop="@dimen/dimen_16"
             android:layout_marginEnd="@dimen/dimen_16"
+            android:fontFamily="@font/inter_bold"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             android:textColor="@color/title_text_color"
             android:textStyle="bold"
@@ -39,11 +40,12 @@
             android:layout_marginTop="@dimen/dimen_8"
             android:layout_marginEnd="@dimen/dimen_16"
             android:layout_marginBottom="@dimen/dimen_16"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="@color/note_text_color"
             android:ellipsize="end"
+            android:fontFamily="@font/inter_medium"
             android:lineSpacingExtra="@dimen/dimen_4"
             android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@color/note_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

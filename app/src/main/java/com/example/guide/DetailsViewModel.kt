@@ -48,8 +48,8 @@ class DetailsViewModel : ViewModel() {
         } ?: TypeSpecificState.Undefined
 
         return DetailsDialogUiState(
-            title = geoObject.name ?: "No title",
-            descriptionText = geoObject.descriptionText ?: "No description",
+            title = geoObject.name ?: "Нет названия",
+            descriptionText = geoObject.descriptionText ?: "Нет описания",
             location = geoObject.geometry.firstOrNull()?.point,
             uri = uri?.value,
             typeSpecificState = geoObjetTypeUiState,

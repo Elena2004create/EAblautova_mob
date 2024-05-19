@@ -63,14 +63,14 @@ class DetailsDialogFragment : DialogFragment() {
                 textTitle.text = it.title
                 textSubtitle.text = it.descriptionText
                 textPlace.text = "${it.location?.latitude}, ${it.location?.longitude}"
-                textUri.goneOrRun(it.uri) {
+                /*textUri.goneOrRun(it.uri) {
                     text = it
-                }
+                }*/
 
                 when (val state = it.typeSpecificState) {
                     is TypeSpecificState.Business -> {
                         layoutBusinessInfo.isVisible = true
-                        textType.text = "Business organisation:"
+                        textType.text = "Организация:"
                         textBusinessName.text = state.name
                         textBusinessWorkingHours.goneOrRun(state.workingHours) {
                             text = it
@@ -83,7 +83,7 @@ class DetailsDialogFragment : DialogFragment() {
                     }
                     is TypeSpecificState.Toponym -> {
                         layoutToponymInfo.isVisible = true
-                        textType.text = "Toponym:"
+                        textType.text = "Топоним:"
                         textToponymAddress.text = state.address
                     }
                     TypeSpecificState.Undefined -> {

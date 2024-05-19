@@ -81,6 +81,14 @@ data class Place(
 ): Parcelable
 
 
+@Parcelize
+data class Article(
+    val title: String,
+    val description: String,
+    val url: String
+): Parcelable
+
+
 
 
 @Database(entities = [User::class, Note::class, Place::class], version = 3)
@@ -105,6 +113,7 @@ abstract class AppDatabase : RoomDatabase() {
                 return instance
             }
         }
+
         /*
         val MIGRATION_2_3: Migration = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
@@ -216,7 +225,7 @@ interface PlaceDao {
 class UserViewModel(application: Application): AndroidViewModel(application) {
     var id: Long? = null
 
-    private val repository: UsersRepository
+    var repository: UsersRepository
     val registrationResult: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
@@ -271,7 +280,7 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
 
 class NoteViewModel(application: Application): AndroidViewModel(application) {
 
-    private val repository: NotesRepository
+    val repository: NotesRepository
     init {
         val noteDao = AppDatabase.getDataBase(application).noteDao()
         repository = NotesRepository(noteDao)
@@ -354,6 +363,9 @@ class LocationViewModel : ViewModel() {
     var routes: List<DrivingRoute> = emptyList<DrivingRoute>()
 
     var points: MutableList<GeoObjectCollection.Item> = mutableListOf()
+
+    var userCountry: String = ""
+    var userCity: String = ""
 
 }
 

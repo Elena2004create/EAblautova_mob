@@ -16,5 +16,7 @@ buildscript {
     dependencies {
         val nav_version = "2.7.7"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
+        classpath("org.powermock:powermock-module-junit4:2.0.9")
+        classpath("org.powermock:powermock-api-mockito2:2.0.9")
     }
 }

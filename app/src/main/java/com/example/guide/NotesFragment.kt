@@ -14,9 +14,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.guide.databinding.FragmentHomeBinding
+import com.example.guide.databinding.FragmentNotesBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -24,13 +27,21 @@ class NotesFragment : Fragment() {
     lateinit var userViewModel: UserViewModel
     lateinit var noteViewModel: NoteViewModel
     var notes: List<Note> = emptyList()
+    lateinit var binding: FragmentNotesBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_notes, container, false)
+
+        binding = FragmentNotesBinding.inflate(layoutInflater)
+
+        retainInstance = true
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val activity = activity as? MainActivity
         // Получаем экземпляр ViewModel из MainActivity
@@ -38,7 +49,10 @@ class NotesFragment : Fragment() {
             userViewModel = activity.userViewModel
         }
 
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+        noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
+
+
+        val toolbar = binding.toolbar
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         val adapter = NotesAdapter()
@@ -46,45 +60,25 @@ class NotesFragment : Fragment() {
         if (savedInstanceState != null) {
             notes = savedInstanceState.getParcelableArrayList("notes") ?: emptyList()
             adapter.setData(notes)
-            //Log.d("notes", notes[0].title)
         }
 
-
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        // Получение данных из savedInstanceState, если они есть
-
-
-
-
-        noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
-        /*
-        noteViewModel.getAllNotes(userViewModel.id).observe(viewLifecycleOwner, Observer {note ->
-            adapter.setData(note)
-        })
-
-         */
 
         noteViewModel.getAllNotes(userViewModel.id).observe(viewLifecycleOwner, Observer { notes ->
             this.notes = notes
             adapter.setData(notes)
-            //Log.d("notes", notes[0].text)
         })
 
 
-        val addBtn: FloatingActionButton = view.findViewById(R.id.floatingActionButton)
+        val addBtn: FloatingActionButton = binding.floatingActionButton
         addBtn.setOnClickListener(){
             findNavController().navigate(R.id.action_notesFragment_to_addNoteFragment)
-            Log.d("1", "work?")
         }
-        //Log.d("1", userViewModel.id.toString())
 
         setHasOptionsMenu(true)
 
-
-        return view
     }
 
 

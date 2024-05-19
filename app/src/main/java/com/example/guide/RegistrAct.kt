@@ -28,9 +28,6 @@ class RegistrAct : AppCompatActivity() {
         binding = ActivityRegistrBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*val userLogin: EditText = findViewById(R.id.user_login)
-        val userPass: EditText = findViewById(R.id.user_pass)
-        val registrBtn: Button = findViewById(R.id.registrBtn)*/
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         binding.apply {
@@ -63,57 +60,6 @@ class RegistrAct : AppCompatActivity() {
                             Toast.makeText(this@RegistrAct, "Такой логин уже занят", Toast.LENGTH_SHORT).show()
                         }
                     })
-                    /*
-                    var user = User(id = 1, login = login, pass = pass)
-
-                    var db = Db(this, null)
-                    db.addUser(user)
-                    Toast.makeText(this, "Пользователь добавлен", Toast.LENGTH_LONG).show()
-
-                    userLogin.text.clear()
-                    userPass.text.clear()
-
-                     */
-                    /*lifecycleScope.launch {
-                        var user = User(login = login, pass = pass)
-                        userViewModel.addUser(user)
-
-                        Toast.makeText(this@RegistrAct, "Пользователь добавлен", Toast.LENGTH_LONG).show()
-
-                        userLogin.text.clear()
-                        userPass.text.clear()
-                        }
-
-                     */
-                    /*lifecycleScope.launch {
-                        val db = App.database
-                        val userdao = db.userDao()
-                        var user = User(login = login, pass = pass)
-                        userdao.insert(user)
-                        Log.e("1", userdao.getAll().toString())
-
-                        Toast.makeText(this@RegistrAct, "Пользователь добавлен", Toast.LENGTH_LONG).show()
-
-                        userLogin.text.clear()
-                        userPass.text.clear()
-                    }
-
-                     */
-
-
-                    //var db = AppDatabase.getInstance(this)
-                    /*
-                    var db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database").build()
-                    var userDao = db.userDao()
-                    userDao.addUser(user)
-                    Log.d("db", userDao.getUsers().toString())
-
-                    Toast.makeText(this, "Пользователь добавлен", Toast.LENGTH_LONG).show()
-
-                    userLogin.text.clear()
-                    userPass.text.clear()
-
-                     */
 
 
                 }

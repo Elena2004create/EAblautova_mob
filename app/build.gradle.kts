@@ -56,6 +56,26 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+
+    debugImplementation("androidx.fragment:fragment-testing:1.7.1") // Use the latest version
+    debugImplementation("androidx.test.ext:junit:1.1.5")
+    debugImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    debugImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    debugImplementation("androidx.test:rules:1.5.0")
+    debugImplementation("androidx.test:runner:1.5.2")
+    debugImplementation("androidx.lifecycle:lifecycle-runtime-testing:2.8.0")
+    debugImplementation("androidx.arch.core:core-testing:2.1.0")
+
+    testImplementation("org.mockito:mockito-core:3.12.4")
+    androidTestImplementation("org.mockito:mockito-android:3.12.4")
+
+    androidTestImplementation("org.powermock:powermock-module-junit4:2.0.9")
+    //testImplementation("org.powermock:powermock-module-junit4-rule:2.0.9")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
+    testImplementation("org.powermock:powermock-classloading-xstream:1.6.6")
+
+
+    implementation("androidx.test.espresso:espresso-contrib:3.5.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -90,4 +110,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.21-1.0.15")
     // To use Kotlin Symbol Processing (KSP)
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_black"
     tools:context=".OpenActivity">
 
     <android.widget.ImageButton
@@ -12,10 +13,11 @@
         android:layout_height="61dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/main_activity_btn"
+        android:src="@drawable/mapbtn_selector"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="#FFFFFF"
-        android:src="@drawable/mapbtn_selector" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <android.widget.ImageButton
         android:id="@+id/homeBtn"
@@ -23,10 +25,13 @@
         android:layout_height="61dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/main_activity_btn"
+        android:src="@drawable/homebtn_selector"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="#FFFFFF"
-        android:src="@drawable/homebtn_selector" />
+        app:layout_constraintEnd_toStartOf="@+id/mapBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <FrameLayout
         android:id="@+id/frame"
@@ -34,6 +39,8 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
