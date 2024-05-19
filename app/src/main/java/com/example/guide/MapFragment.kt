@@ -184,7 +184,6 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
             Log.d("LocationStatus", LocationStatus.values().toString())
             when (p0) {
                 LocationStatus.NOT_AVAILABLE -> {
-                    // Служба определения местоположения недоступна (возможно, проблемы с подключением)
                     requireContext().showToast("Ошибка загрузки, проверьте подключение к интернету")
                 }
                 else -> {}
@@ -246,8 +245,10 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
             locationBtn.setOnClickListener() {
                 locationManager!!.requestSingleUpdate(locationListener)
                 userLocation?.userLocation(locationViewModel.userLatitude, locationViewModel.userLongitude)
-                map.move(
+                /*map.move(
                     CameraPosition(Point(locationViewModel.userLatitude, locationViewModel.userLongitude), 15.0f, 0.0f, 0.0f))
+
+                 */
 
             }
 
@@ -450,7 +451,12 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
     }
 
     override fun onSearchResponse(response: Response) {
-    val mapObjects: MapObjectCollection = mapView.map.mapObjects
+        if (!isAdded) {
+            // Фрагмент не прикреплен к контексту, просто выходим из метода
+            return
+        }
+
+        val mapObjects: MapObjectCollection = mapView.map.mapObjects
     mapObjects.clear()
     locationViewModel.points.clear()
     locationViewModel.routes = emptyList()
