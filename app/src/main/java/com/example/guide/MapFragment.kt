@@ -457,24 +457,24 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
         }
 
         val mapObjects: MapObjectCollection = mapView.map.mapObjects
-    mapObjects.clear()
-    locationViewModel.points.clear()
-    locationViewModel.routes = emptyList()
-    viewModel.reset()
-        for (searchResult in response.collection.children){
-            val resultLocation = searchResult.obj!!.geometry[0].point!!
-            locationViewModel.points.add(searchResult)
+        mapObjects.clear()
+        locationViewModel.points.clear()
+        locationViewModel.routes = emptyList()
+        viewModel.reset()
+            for (searchResult in response.collection.children){
+                val resultLocation = searchResult.obj!!.geometry[0].point!!
+                locationViewModel.points.add(searchResult)
 
-            if(response != null){
-                mapObjects.addPlacemark().apply {
-                    geometry = resultLocation
-                    setIcon(ImageProvider.fromResource(requireContext(), R.drawable.mapmark), IconStyle().apply { scale = 0.5f })
-                    addTapListener(searchResultPlacemarkTapListener)
-                    userData = searchResult.obj!!
+                if(response != null){
+                    mapObjects.addPlacemark().apply {
+                        geometry = resultLocation
+                        setIcon(ImageProvider.fromResource(requireContext(), R.drawable.mapmark), IconStyle().apply { scale = 0.5f })
+                        addTapListener(searchResultPlacemarkTapListener)
+                        userData = searchResult.obj!!
+                    }
+
                 }
-
             }
-        }
     }
 
 

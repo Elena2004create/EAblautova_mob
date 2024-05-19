@@ -18,7 +18,7 @@
         android:label="Туристический справочник"
         android:roundIcon="@drawable/ic_launcher_app_icon_foreground"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Guide"
+        android:theme="@style/Theme.Guide.NoActionBar"
         tools:targetApi="31">
         <activity
             android:name=".RegistrAct"

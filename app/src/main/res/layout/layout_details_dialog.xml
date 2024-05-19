@@ -128,7 +128,7 @@
 
         <Button
             android:id="@+id/addPlaceBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="144dp"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
@@ -140,7 +140,7 @@
 
         <Button
             android:id="@+id/routeBtn"
-            android:layout_width="167dp"
+            android:layout_width="144dp"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/rounded_btn_bg"
