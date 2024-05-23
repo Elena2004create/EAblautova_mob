@@ -3,5 +3,6 @@
     <style name="Theme.Guide.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">#222522</item>
     </style>
 </resources>

@@ -1,12 +1,13 @@
-package com.example.guide
+package com.example.guide.places
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.guide.R
+import com.example.guide.data.Place
 import com.example.guide.databinding.ItemPostPlacesBinding
 
 class PlacesAdapter(val listener: Listener): RecyclerView.Adapter<PlacesAdapter.PlaceHolder>() {

@@ -21,11 +21,11 @@
         android:theme="@style/Theme.Guide.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".RegistrAct"
+            android:name=".registration.RegistrAct"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".OpenActivity"
+            android:name=".registration.OpenActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

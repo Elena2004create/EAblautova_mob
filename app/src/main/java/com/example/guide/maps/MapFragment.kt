@@ -1,4 +1,4 @@
-package com.example.guide
+package com.example.guide.maps
 
 import android.Manifest
 import android.content.Context
@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,7 +24,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.example.guide.R
 import com.example.guide.databinding.FragmentMapBinding
+import com.example.guide.details.DetailsDialogFragment
+import com.example.guide.models.LocationViewModel
+import com.example.guide.utils.DialogManager
+import com.example.guide.utils.showToast
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.GeoObject
 import com.yandex.mapkit.GeoObjectCollection
@@ -53,7 +57,6 @@ import com.yandex.mapkit.map.CameraListener
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CameraUpdateReason
 import com.yandex.mapkit.map.IconStyle
-import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PolylineMapObject
@@ -152,7 +155,7 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
     private val cameraListener = CameraListener { _, _, reason, _ ->
         // Updating current visible region to apply research on map moved by user gestures.
-        locationMapKit.resetAnchor()
+        /*locationMapKit.resetAnchor()
         if (reason == CameraUpdateReason.GESTURES) {
             if (locationViewModel.points.isEmpty()){
                 viewModel.setVisibleRegion(map.visibleRegion)
@@ -164,6 +167,20 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
                 if (locationViewModel.routes.isNotEmpty())
                     routes = locationViewModel.routes
 
+            }
+        }*/
+
+        locationMapKit.resetAnchor()
+
+        if (reason == CameraUpdateReason.GESTURES) {
+            // Проверяем, если маршруты не пусты, назначаем их переменной routes
+            if (locationViewModel.routes.isNotEmpty()) {
+                //routes = locationViewModel.routes
+            }
+
+            // Если точки пусты, обновляем видимый регион
+            if (locationViewModel.points.isEmpty() || locationViewModel.routes.isEmpty()) {
+                viewModel.setVisibleRegion(map.visibleRegion)
             }
         }
     }
@@ -267,6 +284,7 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
             editQueryTextWatcher = editQuery.doAfterTextChanged { text ->
                 if (text.toString() == viewModel.uiState.value.query) return@doAfterTextChanged
+                locationViewModel.routes = emptyList()
                 viewModel.setQueryText(text.toString())
             }
 
@@ -384,7 +402,6 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
             }
         }
 
-
         if (locationViewModel.routes.isNotEmpty())
             routes = locationViewModel.routes
     }
@@ -437,7 +454,9 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
             PointF((mapView.width * 0.5).toFloat(), (mapView.height * 0.83).toFloat())
         )
 
-        userLocationView.arrow.setIcon(ImageProvider.fromResource(requireContext(), R.drawable.userlocation), IconStyle().apply { scale = 0.5f })
+        userLocationView.arrow.setIcon(ImageProvider.fromResource(requireContext(),
+            R.drawable.userlocation
+        ), IconStyle().apply { scale = 0.5f })
 
         userLocationView.accuracyCircle.fillColor = Color.BLUE and -0x66000001
     }
@@ -537,17 +556,17 @@ class MapFragment : Fragment(), UserLocationObjectListener,  Session.SearchListe
 
     private fun PolylineMapObject.styleMainRoute() {
         zIndex = 10f
-        setStrokeColor(ContextCompat.getColor(requireContext(), CommonColors.blue))
+        setStrokeColor(ContextCompat.getColor(requireContext(), R.color.blue))
         strokeWidth = 5f
-        outlineColor = ContextCompat.getColor(requireContext(), CommonColors.black)
+        outlineColor = ContextCompat.getColor(requireContext(), R.color.black)
         outlineWidth = 3f
     }
 
     private fun PolylineMapObject.styleAlternativeRoute() {
         zIndex = 5f
-        setStrokeColor(ContextCompat.getColor(requireContext(), CommonColors.white))
+        setStrokeColor(ContextCompat.getColor(requireContext(), R.color.white))
         strokeWidth = 4f
-        outlineColor = ContextCompat.getColor(requireContext(), CommonColors.black)
+        outlineColor = ContextCompat.getColor(requireContext(), R.color.black)
         outlineWidth = 2f
     }
 

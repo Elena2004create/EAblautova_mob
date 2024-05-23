@@ -1,10 +1,12 @@
-package com.example.guide
+package com.example.guide.maps
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.guide.R
 import com.example.guide.databinding.ItemSuggestBinding
+import com.example.guide.utils.toSpannable
 import com.yandex.mapkit.SpannableString
 
 class SuggestsListAdapter : RecyclerView.Adapter<SuggestHolder>() {
@@ -30,7 +32,7 @@ class SuggestHolder(
     private val binding: ItemSuggestBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private val spanColor = ContextCompat.getColor(binding.root.context, CommonColors.black)
+    private val spanColor = ContextCompat.getColor(binding.root.context, R.color.black)
 
     fun bind(item: SuggestHolderItem) = with(binding) {
         textTitle.text = item.title.toSpannable(spanColor)

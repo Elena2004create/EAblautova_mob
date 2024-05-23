@@ -1,4 +1,4 @@
-package com.example.guide
+package com.example.guide.utils
 
 import android.app.AlertDialog
 import android.content.Context
@@ -13,7 +13,7 @@ object DialogManager {
             listener.onClick()
             dialog.dismiss()
         }
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Закрыть"){ _,_ ->
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Нет"){ _,_ ->
             dialog.dismiss()
         }
         dialog.show()

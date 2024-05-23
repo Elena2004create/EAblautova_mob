@@ -1,6 +1,8 @@
-package com.example.guide
+package com.example.guide.details
 
 import androidx.lifecycle.ViewModel
+import com.example.guide.maps.SelectedObjectHolder
+import com.example.guide.utils.takeIfNotEmpty
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.search.BusinessObjectMetadata
 import com.yandex.mapkit.search.ToponymObjectMetadata

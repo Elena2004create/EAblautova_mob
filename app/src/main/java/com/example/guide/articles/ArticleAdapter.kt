@@ -1,12 +1,13 @@
-package com.example.guide
+package com.example.guide.articles
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.guide.R
+import com.example.guide.data.Article
 import com.example.guide.databinding.ItemArticlesBinding
 
 class ArticleAdapter(private val context: Context, private val articles: List<Article>) :

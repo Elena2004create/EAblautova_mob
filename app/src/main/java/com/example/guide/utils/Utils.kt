@@ -1,4 +1,4 @@
-package com.example.guide
+package com.example.guide.utils
 
 import android.content.Context
 import android.text.Spannable
@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.core.view.isVisible
+import com.example.guide.R
 import com.yandex.mapkit.SpannableString
 import com.yandex.mapkit.geometry.BoundingBox
 import com.yandex.mapkit.map.VisibleRegion

@@ -20,6 +20,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.guide.data.AppDatabase
+import com.example.guide.data.User
+import com.example.guide.data.UserDao
+import com.example.guide.models.UserViewModel
+import com.example.guide.models.UsersRepository
+import com.example.guide.registration.OpenActivity
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.Description

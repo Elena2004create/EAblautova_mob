@@ -1,4 +1,4 @@
-package com.example.guide
+package com.example.guide.notes
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.ListFragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.guide.Note
 import com.example.guide.R
-import com.example.guide.NotesFragmentDirections
+import com.example.guide.data.Note
 
 class NotesAdapter: RecyclerView.Adapter<NotesAdapter.NoteHolder>() {
     private var noteList = emptyList<Note>()

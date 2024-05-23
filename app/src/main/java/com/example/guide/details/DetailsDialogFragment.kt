@@ -1,4 +1,4 @@
-package com.example.guide
+package com.example.guide.details
 
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +10,14 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import com.example.guide.MainActivity
+import com.example.guide.data.Place
 import com.example.guide.databinding.LayoutDetailsDialogBinding
+import com.example.guide.models.LocationViewModel
+import com.example.guide.models.PlaceViewModel
+import com.example.guide.models.UserViewModel
+import com.example.guide.utils.goneOrRun
 import kotlinx.coroutines.launch
 
 class DetailsDialogFragment : DialogFragment() {

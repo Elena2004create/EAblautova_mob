@@ -1,10 +1,11 @@
-package com.example.guide
+package com.example.guide.notes
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.guide.R
 
 
 class NavHostFragment : Fragment() {

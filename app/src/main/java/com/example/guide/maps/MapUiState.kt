@@ -1,4 +1,4 @@
-package com.example.guide
+package com.example.guide.maps
 
 import com.yandex.mapkit.GeoObject
 import com.yandex.mapkit.geometry.BoundingBox

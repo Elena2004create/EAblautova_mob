@@ -1,0 +1,207 @@
+@startuml
+' Define the entities
+
+class User {
+    Long id
+    String login
+    String pass
+}
+
+class Note {
+    Long id
+    Long userId
+    String content
+}
+
+class Place {
+    Long id
+    Long userId
+    String name
+}
+
+interface UserDao {
+    getAll(): List<User>
+    insert(user: User)
+    delete(user: User)
+    updateUser(user: User)
+    getUser(login: String, pass: String): User?
+    getUserId(login: String, pass: String): Long?
+    getUserLogin(userId: Long?): String
+    getUserPass(userId: Long?): String
+    getUserPassByLogin(login: String): String?
+    isUsernameTaken(login: String): Int
+}
+
+interface NoteDao {
+    getAllNotes(): LiveData<List<Note>>
+    getNotesByUserId(userId: Long?): LiveData<List<Note>>
+    addNote(note: Note)
+    updateNote(note: Note)
+    deleteNote(note: Note)
+    deleteAllNotes(userId: Long?)
+}
+
+interface PlaceDao {
+    getAllPlaces(): LiveData<List<Place>>
+    getPlacesByUserId(userId: Long?): LiveData<List<Place>>
+    addPlace(place: Place)
+    updatePlace(place: Place)
+    deletePlace(place: Place)
+    deleteAllPlaces(userId: Long?)
+}
+
+
+class UsersRepository {
+    UserDao userDao
+    insert(user: User)
+    getUserId(login: String, pass: String): Long?
+    updateUser(user: User)
+    getUserLogin(id: Long?): String
+    getUserPass(id: Long?): String
+    getUserPassByLogin(login: String): String?
+    isUsernameTaken(login: String): Int
+}
+
+class NotesRepository {
+    NoteDao noteDao
+    getAllNotes(id: Long?): LiveData<List<Note>>
+    addNote(note: Note)
+    updateNote(note: Note)
+    deleteNote(note: Note)
+    deleteAllNotes(id: Long?)
+}
+
+class PlacesRepository {
+    PlaceDao placeDao
+    getAllPlaces(id: Long?): LiveData<List<Place>>
+    addPlace(place: Place)
+    updatePlace(place: Place)
+    deletePlace(place: Place)
+    deleteAllPlaces(id: Long?)
+}
+
+class UserViewModel {
+    Long? id
+    UsersRepository repository
+    MutableLiveData<Boolean> registrationResult
+    addUser(user: User)
+    getUserId(login: String, pass: String): Long?
+    updateUser(user: User)
+    getUserLogin(id: Long?): String
+    getUserPass(id: Long?): String
+    getUserPassByLogin(login: String): String?
+    registerUser(login: String, pass: String)
+    setUserId(id: Long)
+}
+
+class NoteViewModel {
+    NotesRepository repository
+    getAllNotes(id: Long?): LiveData<List<Note>>
+    addNote(note: Note)
+    updateNote(note: Note)
+    deleteNote(note: Note)
+    deleteAllNotes(id: Long?)
+}
+
+class PlaceViewModel {
+    PlacesRepository repository
+    getAllPlaces(id: Long?): LiveData<List<Place>>
+    addPlace(place: Place)
+    updatePlace(place: Place)
+    deletePlace(place: Place)
+    deleteAllPlaces(id: Long?)
+}
+
+class AppDatabase {
+    UserDao userDao()
+    NoteDao noteDao()
+    PlaceDao placeDao()
+    static AppDatabase getDataBase(application: Application)
+}
+
+class MainActivity {
+    UserViewModel userViewModel
+    onCreate(savedInstanceState: Bundle?)
+    onSaveInstanceState(outState: Bundle)
+    setFragment(fragment: Fragment)
+}
+
+class HomeFragment{
+    UserViewModel userViewModel
+    FragmentHomeBinding binding
+    onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    onViewCreated(view: View, savedInstanceState: Bundle?)
+    onResume()
+    onPause()
+    getLocationInfo(latitude: Double, longitude: Double)
+    parseLocationInfo(jsonResponse: String)
+    userLocation(latitude: Double, longitude: Double)
+}
+
+class LocationViewModel {
+    String userCountry
+    String userCity
+}
+
+class MapFragment {
+    MapView mapView
+      LocationManager locationManager?
+      UserLocationLayer locationMapKit
+      SearchManager searchManager
+      Session searchSession
+      String text
+      DetailsDialogFragment.PlaceSelectionListener listener?
+      MapViewModel viewModel
+      FragmentMapBinding binding
+      map
+      SuggestsListAdapter suggestAdapter
+      TextWatcher editQueryTextWatcher
+      ActivityResultLauncher<String> pLauncher
+      LocationViewModel locationViewModel
+      List<Point> routePoints
+      List<DrivingRoute> routes
+      DrivingRouter drivingRouter
+      DrivingSession drivingSession?
+      MapObjectCollection placemarksCollection
+      MapObjectCollection routesCollection
+      userLocationListener userLocation
+      onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+      onViewCreated(view: View, savedInstanceState: Bundle?)
+      onStart()
+      onStop()
+      onResume()
+      onObjectAdded(userLocationView: UserLocationView)
+      onObjectRemoved(userLocationView: UserLocationView)
+      onObjectUpdated(userLocationView: UserLocationView, event: ObjectEvent)
+}
+
+
+
+' Define relationships
+UserDao <-- UsersRepository
+NoteDao <-- NotesRepository
+PlaceDao <-- PlacesRepository
+
+UsersRepository <-- UserViewModel
+NotesRepository <-- NoteViewModel
+PlacesRepository <-- PlaceViewModel
+
+AppDatabase o-- UserDao
+AppDatabase o-- NoteDao
+AppDatabase o-- PlaceDao
+
+User <.. UserDao
+Note <.. NoteDao
+Place <.. PlaceDao
+
+MainActivity --> UserViewModel
+MainActivity --> HomeFragment
+MainActivity --> MapFragment
+
+HomeFragment --> UserViewModel
+HomeFragment --> FragmentHomeBinding
+HomeFragment --> LocationViewModel
+
+MapFragment --> MapFragment.userLocationListener
+
+@enduml

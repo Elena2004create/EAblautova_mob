@@ -1,18 +1,13 @@
 package com.example.guide
 
-import android.content.Context
 import android.os.Bundle
-import android.se.omapi.Session
-import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
-import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.location.LocationManager
+import com.example.guide.maps.MapFragment
+import com.example.guide.models.UserViewModel
 
 class MainActivity : AppCompatActivity(){
 

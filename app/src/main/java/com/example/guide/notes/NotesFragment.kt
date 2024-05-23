@@ -1,7 +1,6 @@
-package com.example.guide
+package com.example.guide.notes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,13 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.guide.databinding.FragmentHomeBinding
+import com.example.guide.MainActivity
+import com.example.guide.data.Note
+import com.example.guide.models.NoteViewModel
+import com.example.guide.R
+import com.example.guide.models.UserViewModel
 import com.example.guide.databinding.FragmentNotesBinding
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class NotesFragment : Fragment() {

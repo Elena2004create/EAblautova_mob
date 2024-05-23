@@ -1,10 +1,12 @@
-package com.example.guide
+package com.example.guide.models
 
 import androidx.lifecycle.LiveData
-import com.example.guide.Note
-import com.example.guide.NoteDao
-import com.example.guide.User
-import com.example.guide.UserDao
+import com.example.guide.data.Note
+import com.example.guide.data.NoteDao
+import com.example.guide.data.Place
+import com.example.guide.data.PlaceDao
+import com.example.guide.data.User
+import com.example.guide.data.UserDao
 
 class NotesRepository(private val noteDao: NoteDao) {
 

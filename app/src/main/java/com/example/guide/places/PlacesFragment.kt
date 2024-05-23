@@ -1,8 +1,6 @@
-package com.example.guide
+package com.example.guide.places
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -14,13 +12,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.guide.databinding.FragmentNotesBinding
+import com.example.guide.MainActivity
+import com.example.guide.R
+import com.example.guide.data.Place
 import com.example.guide.databinding.FragmentPlacesBinding
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.guide.models.PlaceViewModel
+import com.example.guide.models.UserViewModel
 
 class PlacesFragment : Fragment(), PlacesAdapter.Listener {
 
@@ -48,6 +46,7 @@ class PlacesFragment : Fragment(), PlacesAdapter.Listener {
         }
 
         val toolbar = binding.toolbar
+
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         adapter = PlacesAdapter(this)

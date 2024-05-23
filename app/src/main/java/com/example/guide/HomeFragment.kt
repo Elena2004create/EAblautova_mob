@@ -1,26 +1,29 @@
 package com.example.guide
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.telecom.Call
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.guide.articles.AdviceFragment
 import com.example.guide.databinding.FragmentHomeBinding
+import com.example.guide.maps.MapFragment
+import com.example.guide.models.LocationViewModel
+import com.example.guide.models.UserViewModel
+import com.example.guide.notes.NavHostFragment
+import com.example.guide.places.PlacesFragment
+import com.example.guide.registration.EditUserProfileFragment
+import com.example.guide.registration.OpenActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import java.io.IOException
 
 
 class HomeFragment : Fragment(), MapFragment.userLocationListener {
