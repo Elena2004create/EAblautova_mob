@@ -67,7 +67,7 @@
             android:layout_width="233dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:background="@color/bg_green"
+            android:background="@drawable/search_bar"
             android:backgroundTint="@null"
             android:fontFamily="@font/inter_medium"
             android:hint="Поиск"
@@ -79,7 +79,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
 
-            android:background="@color/semi_green"
+            android:background="@drawable/refresh_bar"
             android:src="@drawable/baseline_refresh_24" />
 
         <!--<Button

@@ -12,7 +12,7 @@
         android:id="@+id/update_user_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_btn_bg"
+        android:background="@drawable/btn_selector"
         android:fontFamily="@font/inter_bold"
         android:text="Изменить"
         android:textColor="#393D40"
